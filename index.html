@@ -190,6 +190,7 @@ const MES=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto
 const DIA=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
 const fmtDate=s=>{if(!s)return'';const d=parse(s);return`${d.getDate()} de ${MES[d.getMonth()]}`};
 const fmtShort=s=>{if(!s)return'';const d=parse(s);return`${pad(d.getDate())}/${pad(d.getMonth()+1)}`};
+const numBR=x=>{let t=String(x??'').replace(/R\$|\s/g,'');if(t==='')return null;if(t.includes(','))t=t.replace(/\./g,'').replace(',','.');else if(/^\d{1,3}(\.\d{3})+$/.test(t))t=t.replace(/\./g,'');const n=Number(t);return isNaN(n)?null:n};
 const brl=v=>(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const when=s=>{const n=daysTo(s);if(n===0)return['hoje','warn'];if(n===1)return['amanhã','warn'];if(n<0)return[`atrasado ${-n} d`,'bad'];if(n<=7)return[`em ${n} dias`,'warn'];return[fmtShort(s),''];};
 const pillWhen=s=>{if(!s)return'';const[t,c]=when(s);return`<span class="pill ${c}">${esc(t)}</span>`};
@@ -230,7 +231,8 @@ function openForm(col,doc,preset={}){
     let input;
     if(f.type==='select')input=`<select id="${id}">${f.o.map(o=>`<option ${o==val?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
     else if(f.type==='textarea')input=`<textarea id="${id}" rows="3">${esc(val)}</textarea>`;
-    else input=`<input id="${id}" type="${f.type||'text'}" ${f.type==='number'?'step="0.01" inputmode="decimal"':''} value="${esc(val)}" ${f.req?'required':''}>`;
+    else if(f.type==='number')input=`<input id="${id}" type="text" inputmode="decimal" placeholder="ex.: 2.500,00" value="${esc(val===''||val==null?'':Number(val).toLocaleString('pt-BR',{maximumFractionDigits:2}))}" ${f.req?'required':''}>`;
+    else input=`<input id="${id}" type="${f.type||'text'}" value="${esc(val)}" ${f.req?'required':''}>`;
     return`<div class="fld" ${f.only?`data-only="${f.only}"`:''}><label for="${id}">${esc(f.l)}</label>${input}</div>`}).join('');
   $('#modal-root').innerHTML=`<div class="ov" id="ov"><form class="modal" id="mf"><h4>${doc?'Editar':'Novo'}: ${esc(F.t)}</h4>${fields}
    <div class="spread"><div>${doc?`<button type="button" class="icon-btn danger" id="mdel">Apagar</button>`:''}</div>
@@ -241,7 +243,7 @@ function openForm(col,doc,preset={}){
   $('#mcancel').onclick=close;$('#ov').onclick=e=>{if(e.target.id==='ov')close()};
   if(doc)$('#mdel').onclick=e=>{const b=e.target;if(b.dataset.sure){remove(col,doc.id);close()}else{b.dataset.sure=1;b.textContent='Toque de novo para apagar'}};
   $('#mf').onsubmit=async e=>{e.preventDefault();const out={};
-    F.f.forEach(f=>{let x=$('#f-'+f.k).value;if(f.type==='number')x=x===''?null:Number(String(x).replace(',','.'));out[f.k]=x});
+    F.f.forEach(f=>{let x=$('#f-'+f.k).value;if(f.type==='number')x=numBR(x);out[f.k]=x});
     if(col==='metas'){const old=(doc&&doc.marcos)||[];out.marcos=out.marcosTxt.split('\n').map(s=>s.trim()).filter(Boolean).map(t=>({t,feito:!!(old.find(m=>m.t===t)||{}).feito}));delete out.marcosTxt}
     if(col==='casa'||col==='compromissos')out.feito=doc?.feito||false;
     if(col==='feira')out.comprado=doc?.comprado||false;
@@ -410,8 +412,8 @@ function V_financas(){const{l,rec,desp}=finSum(finMonth);const prev=finSum(shift
      return`<li style="display:block"><div class="spread"><b>${esc(p.meta)}</b>${editBtn('poupanca',p.id)}</div><div class="spread muted num"><span>${brl(p.guardado)} de ${brl(p.alvo)}</span><span>${Math.round(f*100)}%</span></div><div class="bar"><i style="width:${Math.min(100,f*100)}%"></i></div>${mes?`<div class="muted">${mes}</div>`:''}</li>`}).join('')}</ul>`:'<p class="empty">Nenhuma meta de economia.</p>'}</section>
   </div>
   <section class="card" style="margin-top:14px"><h3>${ICONS.notas} Lançamentos do mês</h3>${l.length?`<ul class="items">${[...l].sort((a,b)=>(b.data||'').localeCompare(a.data||'')).map(x=>`<li><span class="muted num" style="width:44px">${fmtShort(x.data)}</span><div class="grow">${esc(x.descricao)}<div class="muted">${esc(x.categoria||'')}</div></div><span class="num" style="color:${x.tipo==='receita'?'var(--ok)':'var(--ink)'}">${x.tipo==='receita'?'+':'−'} ${brl(x.valor)}</span>${editBtn('lancamentos',x.id)}</li>`).join('')}</ul>`:'<p class="empty">Nenhum lançamento neste mês. Use “+ Gasto” ou “+ Entrada”.</p>'}</section>`}
-function editBudget(){const lim=cfg('orcamento').limites||{};$('#modal-root').innerHTML=`<div class="ov"><form class="modal" id="bf"><h4>Limites por mês</h4>${CATS_FIN.map((c,i)=>`<div class="fld"><label for="b${i}">${c} (R$)</label><input id="b${i}" type="number" step="0.01" inputmode="decimal" value="${lim[c]??''}"></div>`).join('')}<div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" onclick="document.getElementById('modal-root').innerHTML=''">Cancelar</button><button class="btn">Salvar</button></div></form></div>`;
-  $('#bf').onsubmit=e=>{e.preventDefault();const o={};CATS_FIN.forEach((c,i)=>{const v=$('#b'+i).value;if(v!=='')o[c]=Number(v)});save('config','orcamento',{limites:o});$('#modal-root').innerHTML='';flash('Limites salvos')}}
+function editBudget(){const lim=cfg('orcamento').limites||{};$('#modal-root').innerHTML=`<div class="ov"><form class="modal" id="bf"><h4>Limites por mês</h4>${CATS_FIN.map((c,i)=>`<div class="fld"><label for="b${i}">${c} (R$)</label><input id="b${i}" type="text" inputmode="decimal" placeholder="ex.: 1.500" value="${lim[c]!=null?Number(lim[c]).toLocaleString('pt-BR'):''}"></div>`).join('')}<div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" onclick="document.getElementById('modal-root').innerHTML=''">Cancelar</button><button class="btn">Salvar</button></div></form></div>`;
+  $('#bf').onsubmit=e=>{e.preventDefault();const o={};CATS_FIN.forEach((c,i)=>{const v=$('#b'+i).value;const n=numBR(v);if(n!=null)o[c]=n});save('config','orcamento',{limites:o});$('#modal-root').innerHTML='';flash('Limites salvos')}}
 
 function V_feira(){const all=S.feira;const falta=all.filter(x=>!x.comprado);const est=all.reduce((a,x)=>a+(+x.preco||0),0);const gasto=all.filter(x=>x.comprado).reduce((a,x)=>a+(+x.preco||0),0);
   const cats=FEIRA_CATS.filter(c=>all.some(x=>(x.categoria||'Outros')===c));
