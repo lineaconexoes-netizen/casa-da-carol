@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#6D1A36">
 <meta name="robots" content="noindex">
 <title>Casa da Carol</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Lora:ital,wght@0,400;0,500;1,400&family=Great+Vibes&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <style>
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 [hidden]{display:none!important}
@@ -14,9 +14,9 @@ img{max-width:100%}
 /* Layout: cabeçalho com saudação, barra de seções e um painel por seção; cartões só onde agrupam algo */
 :root{
   --creme:#F5EFE6;--bege:#E6D5C3;--areia:#C9A98B;--caramelo:#A47551;--cafe:#5C3D2E;--marsala:#955251;--bordo:#6D1A36;
-  --bg:#F5EFE6;--surface:#FFFDF9;--line:#E6D5C3;--ink:#5C3D2E;--soft:#8A6A55;--accent:#6D1A36;--accent2:#955251;--warm:#A47551;--onaccent:#F5EFE6;--chip:#EFE4D6;
+  --bg:#F3ECE3;--surface:#FFFFFF;--line:#E6D5C3;--ink:#5C3D2E;--soft:#8A6A55;--accent:#6D1A36;--accent2:#955251;--warm:#A47551;--onaccent:#F5EFE6;--chip:#EFE4D6;
   --ok:#5E7A4E;--warn:#B07A2A;--bad:#A3343A;
-  --f-title:'Playfair Display',Georgia,serif;--f-sub:'Cormorant Garamond',Georgia,serif;--f-body:Lora,Georgia,serif;--f-sig:'Great Vibes',cursive;
+  --f-title:'Plus Jakarta Sans',system-ui,sans-serif;--f-sub:'Plus Jakarta Sans',system-ui,sans-serif;--f-body:'Plus Jakarta Sans',system-ui,sans-serif;--f-sig:'Plus Jakarta Sans',system-ui,sans-serif;--shadow:0 1px 2px rgba(92,61,46,.06),0 6px 20px rgba(92,61,46,.07);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#231915;--surface:#2E211B;--line:#4A3529;--ink:#F0E5D8;--soft:#C9A98B;--accent:#D88A93;--accent2:#C9877F;--warm:#C9A98B;--onaccent:#231915;--chip:#3A2A22;--ok:#9DBA86;--warn:#E0B060;--bad:#E58C8C;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#231915;--surface:#2E211B;--line:#4A3529;--ink:#F0E5D8;--soft:#C9A98B;--accent:#D88A93;--accent2:#C9877F;--warm:#C9A98B;--onaccent:#231915;--chip:#3A2A22;--ok:#9DBA86;--warn:#E0B060;--bad:#E58C8C;color-scheme:dark}
@@ -89,6 +89,34 @@ button{font:inherit;cursor:pointer}
 .ev.cuid{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
 .more{font-size:11px;color:var(--soft)}
 @media (max-width:560px){.cd{min-height:52px;align-items:center}.cd .ev{width:7px;height:7px;padding:0;border-radius:99px;font-size:0;display:inline-block}.cd{flex-direction:row;flex-wrap:wrap;align-content:flex-start;justify-content:center}.cd .dn{width:100%;text-align:center}.cd.hoje .dn{width:auto}.more{font-size:10px}.cd .ev.ag{background:var(--accent)}.cd .ev.conta{background:var(--warn)}.cd .ev.cuid{background:var(--ok)}}
+
+/* visual moderno */
+body{font-size:15px;letter-spacing:-.005em}
+h1{font-weight:800;letter-spacing:-.03em;font-size:clamp(26px,4.5vw,36px)}
+.date{font-style:normal;font-size:15px;font-weight:500;color:var(--soft)}
+.sig{display:none}
+header.top{border-bottom:0;padding-bottom:6px}
+nav.tabs{border-bottom:0;gap:6px}
+nav.tabs a{font-size:14px;font-weight:600;letter-spacing:0;padding:8px 14px;background:var(--surface);box-shadow:var(--shadow)}
+nav.tabs a[aria-current="page"]{box-shadow:none}
+h2{font-weight:800;letter-spacing:-.02em;font-size:24px}
+h3{text-transform:none;letter-spacing:-.01em;font-size:15px;font-weight:700;color:var(--ink)}
+h3 svg{color:var(--accent2)}
+.lead{font-style:normal;font-size:14.5px}
+.card{border:0;border-radius:20px;box-shadow:var(--shadow);padding:18px 20px}
+.btn{font-size:14px;font-weight:600;padding:8px 16px}
+.btn.ghost{background:var(--chip);border-color:transparent;color:var(--ink)}
+.stat{font-weight:800;letter-spacing:-.02em;font-size:28px}
+.petname{font-weight:800;letter-spacing:-.02em}
+.modal{border:0;border-radius:22px}
+.modal h4{font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+.fld label{font-size:13px;font-weight:600}
+input,select,textarea{border-radius:12px;background:var(--chip);border-color:transparent}
+.check{border-radius:7px}
+.bar{height:10px}
+.cd{border-radius:12px}
+.cal-h span{text-transform:none;letter-spacing:0;font-size:12px}
+ul.items li{border-top-color:color-mix(in srgb,var(--line) 70%,transparent)}
 /* modal */
 .ov{position:fixed;inset:0;background:color-mix(in srgb,#000 45%,transparent);z-index:20;display:grid;place-items:center;padding:16px}
 .modal{background:var(--surface);border-radius:14px;max-width:460px;width:100%;max-height:90vh;overflow:auto;padding:20px;border:1px solid var(--line)}
