@@ -117,6 +117,26 @@ input,select,textarea{border-radius:12px;background:var(--chip);border-color:tra
 .cd{border-radius:12px}
 .cal-h span{text-transform:none;letter-spacing:0;font-size:12px}
 ul.items li{border-top-color:color-mix(in srgb,var(--line) 70%,transparent)}
+
+/* menu lateral */
+nav.tabs{position:fixed;top:0;bottom:0;left:0;width:248px;z-index:15;flex-direction:column;gap:4px;overflow-y:auto;overflow-x:hidden;margin:0;
+  padding:calc(24px + env(safe-area-inset-top,0px)) 14px calc(24px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));background:var(--surface);box-shadow:var(--shadow)}
+nav.tabs::before{content:"Casa da Carol";font-family:var(--f-title);font-weight:800;font-size:19px;letter-spacing:-.02em;color:var(--accent);padding:0 12px 18px}
+nav.tabs a{width:100%;background:transparent;box-shadow:none;padding:10px 12px;border-radius:12px;font-size:14.5px;color:var(--soft)}
+nav.tabs a:hover{background:var(--chip);color:var(--ink)}
+nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--onaccent)}
+nav.tabs a svg{width:20px;height:20px}
+.menu-btn{display:none}
+@media (min-width:861px){.wrap{max-width:none;margin:0;padding-left:calc(248px + max(32px,env(safe-area-inset-left,0px)));padding-right:max(32px,env(safe-area-inset-right,0px))}.wrap>header,.wrap>main{max-width:1080px}}
+@media (max-width:860px){
+  nav.tabs{transform:translateX(-105%);transition:transform .25s ease}
+  body.menu-open nav.tabs{transform:none}
+  .menu-btn{display:grid;gap:4px;place-content:center;width:42px;height:42px;border:0;border-radius:12px;background:var(--surface);box-shadow:var(--shadow);flex:none;align-self:center}
+  .menu-btn span{display:block;width:18px;height:2px;border-radius:2px;background:var(--ink)}
+  header.top{flex-wrap:nowrap;align-items:center}
+  .scrim{position:fixed;inset:0;z-index:14;background:color-mix(in srgb,#000 35%,transparent)}
+}
+@media (prefers-reduced-motion:reduce){nav.tabs{transition:none}}
 /* modal */
 .ov{position:fixed;inset:0;background:color-mix(in srgb,#000 45%,transparent);z-index:20;display:grid;place-items:center;padding:16px}
 .modal{background:var(--surface);border-radius:14px;max-width:460px;width:100%;max-height:90vh;overflow:auto;padding:20px;border:1px solid var(--line)}
@@ -139,10 +159,12 @@ input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:
 <div class="login" id="login" hidden><form class="modal" id="lf"><h4>Casa da Carol</h4><p class="muted" style="margin-top:-6px">Entre com seu e-mail e senha.</p><div class="fld"><label for="l-e">E-mail</label><input id="l-e" type="email" autocomplete="username" required></div><div class="fld"><label for="l-s">Senha</label><input id="l-s" type="password" autocomplete="current-password" required></div><p class="muted" id="l-msg" role="alert"></p><button class="btn">Entrar</button></form></div>
 <div class="wrap" id="app" hidden>
   <header class="top">
-    <div><h1 id="hello">Bom dia, Carol</h1><div class="date" id="today"></div></div>
+    <button class="menu-btn" id="menu-btn" aria-label="Abrir menu" aria-controls="tabs" aria-expanded="false"><span></span><span></span><span></span></button>
+    <div class="grow"><h1 id="hello">Bom dia, Carol</h1><div class="date" id="today"></div></div>
     <div class="row"><div class="sig">Casa da Carol</div><button class="icon-btn" id="sair">sair</button></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Seções"></nav>
+  <div class="scrim" id="scrim" hidden></div>
   <main id="view"><p class="empty">Carregando seus dados…</p></main>
 </div>
 <div id="modal-root"></div>
@@ -399,7 +421,12 @@ function render(){renderTabs();const d=new Date();const h=d.getHours();
   $('#today').textContent=`${DIA[d.getDay()]}, ${d.getDate()} de ${MES[d.getMonth()]} de ${d.getFullYear()}`;
   if(!ready){return}
   const y=scrollY;$('#view').innerHTML=VIEWS[route()]();scrollTo(0,y)}
-addEventListener('hashchange',()=>{scrollTo(0,0);render()});
+
+function setMenu(open){document.body.classList.toggle('menu-open',open);$('#scrim').hidden=!open;$('#menu-btn').setAttribute('aria-expanded',open)}
+$('#menu-btn').onclick=()=>setMenu(!document.body.classList.contains('menu-open'));
+$('#scrim').onclick=()=>setMenu(false);
+addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+addEventListener('hashchange',()=>{scrollTo(0,0);setMenu(false);render()});
 render();
 
 /* ---------- Supabase (igual ao Sistema Linéa) ---------- */
