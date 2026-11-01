@@ -196,7 +196,7 @@ const when=s=>{const n=daysTo(s);if(n===0)return['hoje','warn'];if(n===1)return[
 const pillWhen=s=>{if(!s)return'';const[t,c]=when(s);return`<span class="pill ${c}">${esc(t)}</span>`};
 
 /* ---------- dados ---------- */
-const COLS=['fixas','feira','habitos','marcas','compromissos','metas','lancamentos','contas','poupanca','casa','marina','pets','config'];
+const COLS=['cartoes','fixas','feira','habitos','marcas','compromissos','metas','lancamentos','contas','poupanca','casa','marina','pets','config'];
 const S={};COLS.forEach(c=>S[c]=[]);
 let db=null,ready=false;
 const cfg=id=>(S.config.find(d=>d.id===id)||{});
@@ -207,7 +207,7 @@ async function patch(col,id,data){try{await db.collection(col).doc(id).update(da
 async function remove(col,id){try{await db.collection(col).doc(id).delete();flash('Apagado')}catch(e){flash('Não consegui apagar: '+(e.message||e.code||'erro'))}}
 
 /* ---------- formulários ---------- */
-const CATS_FIN=['Casa','Alimentação','Marina','Kiara e Diana','Família','Saúde','Autocuidado','Transporte','Lazer','Estudos','Compras','Outros'];
+const CATS_FIN=['Cartão de crédito','Casa','Alimentação','Marina','Kiara e Diana','Família','Saúde','Autocuidado','Transporte','Lazer','Estudos','Compras','Outros'];
 const ICON_LIST=Object.keys(ICONS);
 const FEIRA_CATS=['Hortifrúti','Açougue e peixaria','Frios e laticínios','Mercearia','Padaria','Bebidas','Limpeza','Higiene','Marina','Kiara e Diana','Outros'];
 const FORMS={
@@ -217,6 +217,7 @@ const FORMS={
   lancamentos:{t:'Lançamento',f:[{k:'tipo',l:'Tipo',type:'select',o:['despesa','receita'],def:()=>'despesa'},{k:'descricao',l:'Descrição',req:1},{k:'valor',l:'Valor (R$)',type:'number',req:1},{k:'categoria',l:'Categoria',type:'select',o:CATS_FIN},{k:'data',l:'Data',type:'date',def:TODAY}]},
   contas:{t:'Conta a pagar',f:[{k:'descricao',l:'Conta',req:1},{k:'valor',l:'Valor (R$)',type:'number'},{k:'vencimento',l:'Vencimento',type:'date',req:1},{k:'categoria',l:'Categoria',type:'select',o:CATS_FIN},{k:'mensal',l:'Repete todo mês?',type:'select',o:['sim','não'],def:()=>'sim'}]},
   poupanca:{t:'Meta de economia',f:[{k:'meta',l:'Para quê',req:1},{k:'alvo',l:'Valor alvo (R$)',type:'number',req:1},{k:'guardado',l:'Já guardado (R$)',type:'number',def:()=>0},{k:'prazo',l:'Prazo',type:'date'}]},
+  cartoes:{t:'Cartão de crédito',f:[{k:'nome',l:'Cartão (ex.: Nubank, Itaú Visa)',req:1},{k:'dia',l:'Dia do vencimento da fatura',type:'number',req:1},{k:'fech',l:'Dia do fechamento',type:'number'},{k:'limite',l:'Limite (R$)',type:'number'}]},
   fixas:{t:'Conta fixa',f:[{k:'nome',l:'Conta',req:1},{k:'valor',l:'Valor por mês (R$)',type:'number',req:1},{k:'dia',l:'Dia do vencimento',type:'number',req:1},{k:'categoria',l:'Categoria',type:'select',o:CATS_FIN,def:()=>'Casa'},{k:'forma',l:'Como paga',type:'select',o:['boleto','débito automático','Pix','cartão de crédito','dinheiro']}]},
   feira:{t:'Item da feira',f:[{k:'nome',l:'Item',req:1},{k:'qtd',l:'Quantidade',def:()=>'1'},{k:'categoria',l:'Seção',type:'select',o:FEIRA_CATS},{k:'preco',l:'Preço estimado (R$, total do item)',type:'number'}]},
   casa:{t:'Item da casa',f:[{k:'lista',l:'Lista',type:'select',o:['comprar','ajeitar','instalar']},{k:'texto',l:'O quê',req:1},{k:'onde',l:'Cômodo ou loja'},{k:'nota',l:'Observação',type:'textarea'}]},
@@ -247,6 +248,7 @@ function openForm(col,doc,preset={}){
     if(col==='metas'){const old=(doc&&doc.marcos)||[];out.marcos=out.marcosTxt.split('\n').map(s=>s.trim()).filter(Boolean).map(t=>({t,feito:!!(old.find(m=>m.t===t)||{}).feito}));delete out.marcosTxt}
     if(col==='casa'||col==='compromissos')out.feito=doc?.feito||false;
     if(col==='feira')out.comprado=doc?.comprado||false;
+    if(col==='cartoes'){out.faturas=doc?.faturas||{};out.dia=Math.min(31,Math.max(1,Math.round(out.dia||1)))}
     if(col==='fixas'){out.pagos=doc?.pagos||{};out.dia=Math.min(31,Math.max(1,Math.round(out.dia||1)))}
     if(col==='contas')out.pago=doc?.pago||false;
     if(col==='habitos')out.ordem=doc?.ordem??S.habitos.length;
@@ -271,6 +273,8 @@ document.addEventListener('click',e=>{
   if(act==='feira-reset'){const b=e.target.closest('button');if(!b.dataset.sure){b.dataset.sure=1;b.textContent='Toque de novo para desmarcar tudo';return}S.feira.filter(x=>x.comprado).forEach(x=>patch('feira',x.id,{comprado:false}));flash('Lista pronta para o próximo mês')}
   if(act==='feira-lancar'){const t=S.feira.filter(x=>x.comprado).reduce((a,x)=>a+(+x.preco||0),0);openForm('lancamentos',null,{tipo:'despesa',descricao:'Feira do mês',valor:t||'',categoria:'Alimentação'})}
   if(act==='fixa'&&doc){payFixa(doc,extra)}
+  if(act==='fatura'&&doc){editFatura(doc,extra)}
+  if(act==='fatpaga'&&doc){payFatura(doc,extra)}
   if(act==='done-clear'){S.casa.filter(x=>x.feito&&x.lista===extra).forEach(x=>remove('casa',x.id))}
 });
 function toggleHabit(hid,day){const m=S.marcas.find(x=>x.id===day);const f=new Set((m&&m.feitos)||[]);f.has(hid)?f.delete(hid):f.add(hid);save('marcas',day,{feitos:[...f]})}
@@ -297,9 +301,10 @@ function proximos(dias=15){const out=[];
   S.pets.forEach(r=>{if(r.proxima&&daysTo(r.proxima)<=dias)out.push({q:r.pet,t:`${r.tipo}: ${r.titulo}`,d:r.proxima,col:'pets',id:r.id,i:'saude'})});
   S.contas.forEach(r=>{if(!r.pago&&r.vencimento&&daysTo(r.vencimento)<=7)out.push({q:'Conta',t:`${r.descricao}${r.valor?' · '+brl(r.valor):''}`,d:r.vencimento,col:'contas',id:r.id,i:'financas',pay:1})});
   const mes=TODAY().slice(0,7);S.fixas.forEach(f=>{if(!f.pagos?.[mes]){const v=fixaVenc(f,mes);if(daysTo(v)<=7)out.push({q:'Conta fixa',t:`${f.nome} · ${brl(f.valor)}`,d:v,col:'fixas',id:f.id,i:'financas',fixa:mes})}});
+  S.cartoes.forEach(c=>{const f=(c.faturas||{})[mes]||{};if(!f.pago){const v=fixaVenc(c,mes);if(daysTo(v)<=7)out.push({q:'Cartão',t:`Fatura ${c.nome}${f.valor?' · '+brl(f.valor):''}`,d:v,col:'cartoes',id:c.id,i:'financas',cart:mes})}});
   return out.sort((a,b)=>a.d.localeCompare(b.d))}
 function lembretes(list){if(!list.length)return'<p class="empty">Nenhum lembrete para os próximos dias.</p>';
-  return`<ul class="items">${list.map(x=>`<li>${x.fixa?`<button class="check" data-act="fixa" data-col="fixas" data-id="${x.id}" data-extra="${x.fixa}" aria-label="Marcar como paga"></button>`:x.pay?`<button class="check" data-act="toggle" data-col="contas" data-id="${x.id}" aria-label="Marcar como paga"></button>`:ic(x.i)}<div class="grow"><span class="muted">${esc(x.q)}</span><div>${esc(x.t)}</div></div>${pillWhen(x.d)}</li>`).join('')}</ul>`}
+  return`<ul class="items">${list.map(x=>`<li>${x.cart?`<button class="check" data-act="fatpaga" data-col="cartoes" data-id="${x.id}" data-extra="${x.cart}" aria-label="Marcar fatura como paga"></button>`:x.fixa?`<button class="check" data-act="fixa" data-col="fixas" data-id="${x.id}" data-extra="${x.fixa}" aria-label="Marcar como paga"></button>`:x.pay?`<button class="check" data-act="toggle" data-col="contas" data-id="${x.id}" aria-label="Marcar como paga"></button>`:ic(x.i)}<div class="grow"><span class="muted">${esc(x.q)}</span><div>${esc(x.t)}</div></div>${pillWhen(x.d)}</li>`).join('')}</ul>`}
 
 function semestre(){const c=cfg('geral');const y=new Date().getFullYear();const m=new Date().getMonth();
   return{ini:c.inicio||(m<6?`${y}-01-01`:`${y}-07-01`),fim:c.fim||(m<6?`${y}-06-30`:`${y}-12-31`)}}
@@ -339,6 +344,7 @@ let calMonth=TODAY().slice(0,7),calDay=TODAY();
 function eventosDoDia(d){const ev=S.compromissos.filter(c=>c.data===d).sort(sortAg).map(c=>({k:'ag',t:(c.hora?c.hora+' ':'')+c.titulo}));
   S.contas.filter(c=>!c.pago&&c.vencimento===d).forEach(c=>ev.push({k:'conta',t:'Conta: '+c.descricao}));
   S.fixas.filter(f=>fixaVenc(f,d.slice(0,7))===d&&!f.pagos?.[d.slice(0,7)]).forEach(f=>ev.push({k:'conta',t:'Conta: '+f.nome}));
+  S.cartoes.filter(c=>fixaVenc(c,d.slice(0,7))===d&&!((c.faturas||{})[d.slice(0,7)]||{}).pago).forEach(c=>ev.push({k:'conta',t:'Fatura: '+c.nome}));
   S.marina.filter(r=>r.proxima===d).forEach(r=>ev.push({k:'cuid',t:'Marina: '+r.titulo}));
   S.pets.filter(r=>r.proxima===d).forEach(r=>ev.push({k:'cuid',t:r.pet+': '+r.titulo}));return ev}
 function V_agenda(){const[y,m]=calMonth.split('-').map(Number);const first=new Date(y,m-1,1);const nd=new Date(y,m,0).getDate();const lead=first.getDay();
@@ -380,6 +386,24 @@ async function payFixa(f,mes){const pagos={...(f.pagos||{})};
   const lid=uid2();pagos[mes]=lid;await patch('fixas',f.id,{pagos});
   const hoje=TODAY();await save('lancamentos',lid,{tipo:'despesa',descricao:f.nome,valor:+f.valor||0,categoria:f.categoria||'Casa',data:hoje.startsWith(mes)?hoje:fixaVenc(f,mes),fixa:f.id,criadoEm:Date.now()});flash('Pago e lançado nas despesas')}
 const uid2=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2));
+
+async function payFatura(c,mes){const fat={...(c.faturas||{})};const f={...(fat[mes]||{})};
+  if(f.pago){f.pago=false;const lid=f.lanc;delete f.lanc;fat[mes]=f;await patch('cartoes',c.id,{faturas:fat});if(lid&&S.lancamentos.some(l=>l.id===lid))remove('lancamentos',lid);return}
+  if(!f.valor){editFatura(c,mes,true);return}
+  const lid=uid2();f.pago=true;f.lanc=lid;fat[mes]=f;await patch('cartoes',c.id,{faturas:fat});
+  const hoje=TODAY();await save('lancamentos',lid,{tipo:'despesa',descricao:'Fatura '+c.nome,valor:+f.valor,categoria:'Cartão de crédito',data:hoje.startsWith(mes)?hoje:fixaVenc(c,mes),cartao:c.id,criadoEm:Date.now()});flash('Fatura paga e lançada nas despesas')}
+function editFatura(c,mes,thenPay){const f=(c.faturas||{})[mes]||{};const[y,m]=mes.split('-');
+  $('#modal-root').innerHTML=`<div class="ov"><form class="modal" id="ff"><h4>Fatura ${esc(c.nome)}</h4><p class="muted" style="margin-top:-6px">${MES[+m-1]} de ${y} · vence dia ${+c.dia}</p><div class="fld"><label for="fv">Valor da fatura (R$)</label><input id="fv" type="text" inputmode="decimal" placeholder="ex.: 1.850,00" value="${f.valor!=null?Number(f.valor).toLocaleString('pt-BR',{maximumFractionDigits:2}):''}" required></div><div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" onclick="document.getElementById('modal-root').innerHTML=''">Cancelar</button><button class="btn">Salvar</button></div></form></div>`;
+  $('#fv').focus();$('#ff').onsubmit=async e=>{e.preventDefault();const v=numBR($('#fv').value);if(v==null)return;const fat={...(c.faturas||{})};fat[mes]={...(fat[mes]||{}),valor:v};$('#modal-root').innerHTML='';await patch('cartoes',c.id,{faturas:fat});flash('Fatura salva');
+    if(thenPay){const nc=S.cartoes.find(x=>x.id===c.id)||{...c,faturas:fat};payFatura(nc,mes)}}}
+function cartoesCard(mes){const cs=[...S.cartoes].sort((a,b)=>(+a.dia||0)-(+b.dia||0));const fat=c=>(c.faturas||{})[mes]||{};
+  const tot=cs.reduce((a,c)=>a+(+fat(c).valor||0),0);const aberto=cs.filter(c=>!fat(c).pago).reduce((a,c)=>a+(+fat(c).valor||0),0);
+  return`<section class="card"><div class="spread"><h3>${ICONS.financas} Cartões de crédito</h3>${addBtn('cartoes','Cartão')}</div>
+  ${cs.length?`<div class="stats" style="margin-bottom:6px"><div><div class="muted">Faturas do mês</div><div class="stat num">${brl(tot)}</div></div><div><div class="muted">Falta pagar</div><div class="stat num">${brl(aberto)}</div></div></div>
+  <ul class="items">${cs.map(c=>{const f=fat(c);const v=fixaVenc(c,mes);const uso=c.limite&&f.valor?Math.round(f.valor/c.limite*100):null;
+   return`<li><button class="check ${f.pago?'on':''}" data-act="fatpaga" data-col="cartoes" data-id="${c.id}" data-extra="${mes}" aria-label="Marcar fatura ${esc(c.nome)} como paga"></button><div class="grow ${f.pago?'done':''}">${esc(c.nome)}<div class="muted num">vence dia ${+c.dia}${c.fech?` · fecha dia ${+c.fech}`:''}${uso!=null?` · ${uso}% do limite`:''}</div></div>
+   <button class="icon-btn num" data-act="fatura" data-col="cartoes" data-id="${c.id}" data-extra="${mes}" style="font-size:15px;color:var(--ink)">${f.valor!=null?brl(f.valor):'+ valor'}</button>${f.pago?'<span class="pill ok">paga</span>':pillWhen(v)}${editBtn('cartoes',c.id)}</li>`}).join('')}</ul>
+  <p class="muted" style="margin:8px 0 0">Toque no valor para lançar a fatura do mês. Ao marcar como paga, ela entra nos gastos do mês.</p>`:'<p class="empty">Cadastre seus cartões com o dia de vencimento. Todo mês você coloca o valor da fatura e marca quando pagar.</p>'}</section>`}
 function fixasCard(mes){const fs=[...S.fixas].sort((a,b)=>(+a.dia||0)-(+b.dia||0));const tot=fs.reduce((a,f)=>a+(+f.valor||0),0);const pago=fs.filter(f=>f.pagos?.[mes]).reduce((a,f)=>a+(+f.valor||0),0);
   return`<section class="card"><div class="spread"><h3>${ICONS.casa} Contas fixas</h3>${addBtn('fixas','Nova')}</div>
   ${fs.length?`<div class="stats" style="margin-bottom:6px"><div><div class="muted">Total por mês</div><div class="stat num">${brl(tot)}</div></div><div><div class="muted">Falta pagar</div><div class="stat num">${brl(tot-pago)}</div></div></div>
@@ -394,7 +418,7 @@ function V_financas(){const{l,rec,desp}=finSum(finMonth);const prev=finSum(shift
   const pagas=S.contas.filter(c=>c.pago&&(c.vencimento||'').startsWith(finMonth));
   const [yy,mm]=finMonth.split('-');
   return`<h2>Finanças</h2><div class="spread"><p class="lead" style="margin:0">${MES[+mm-1]} de ${yy}</p><div class="row"><button class="btn ghost" data-act="month" data-extra="${shiftMonth(finMonth,-1)}" aria-label="Mês anterior">‹</button><button class="btn ghost" data-act="month" data-extra="${TODAY().slice(0,7)}">Mês atual</button><button class="btn ghost" data-act="month" data-extra="${shiftMonth(finMonth,1)}" aria-label="Próximo mês">›</button></div></div>
-  <div class="row" style="margin:12px 0">${addBtn('lancamentos','Gasto',{tipo:'despesa'})}${addBtn('lancamentos','Entrada',{tipo:'receita'})}${addBtn('fixas','Conta fixa')}${addBtn('contas','Conta avulsa')}</div>
+  <div class="row" style="margin:12px 0">${addBtn('lancamentos','Gasto',{tipo:'despesa'})}${addBtn('lancamentos','Entrada',{tipo:'receita'})}${addBtn('fixas','Conta fixa')}${addBtn('cartoes','Cartão')}${addBtn('contas','Conta avulsa')}</div>
   <section class="card"><div class="stats">
    <div><div class="muted">Entrou</div><div class="stat num">${brl(rec)}</div></div>
    <div><div class="muted">Saiu</div><div class="stat num">${brl(desp)}</div>${delta!==null?`<span class="pill ${delta>0?'warn':'ok'}">${delta>0?'+':''}${delta}% sobre o mês anterior</span>`:''}</div>
@@ -402,6 +426,7 @@ function V_financas(){const{l,rec,desp}=finSum(finMonth);const prev=finSum(shift
    <div><div class="muted">Taxa de poupança</div><div class="stat num">${taxa}%</div></div></div></section>
   <div class="grid" style="margin-top:14px">
    ${fixasCard(finMonth)}
+   ${cartoesCard(finMonth)}
    <section class="card chart"><h3>${ICONS.financas} Últimos 6 meses</h3>${chart6()}</section>
    <section class="card"><div class="spread"><h3>${ICONS.metas} Orçamento por categoria</h3><button class="icon-btn" data-act="budget">definir limites</button></div>
     ${cats.length?`<ul class="items">${cats.map(c=>{const g=porCat[c]||0,L=+lim[c]||0,over=L&&g>L;return`<li style="display:block"><div class="spread"><span>${esc(c)}</span><span class="num muted">${brl(g)}${L?` de ${brl(L)}`:''}</span></div>${L?`<div class="bar ${over?'over':''}" style="margin-top:4px"><i style="width:${Math.min(100,g/L*100)}%"></i></div>`:''}${over?`<span class="pill bad">passou ${brl(g-L)}</span>`:''}</li>`}).join('')}</ul>`:'<p class="empty">Defina limites por categoria ou lance os primeiros gastos.</p>'}</section>
