@@ -142,6 +142,13 @@ nav.tabs a svg{width:20px;height:20px}
   .scrim{position:fixed;inset:0;z-index:14;background:color-mix(in srgb,#000 35%,transparent)}
 }
 @media (prefers-reduced-motion:reduce){nav.tabs{transition:none}}
+.ponto{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pt{display:grid;gap:4px}.pt .btn{justify-self:start}
+table.jt{border-collapse:collapse;width:100%;font-size:14px}
+table.jt th{text-align:left;font-weight:600;color:var(--soft);font-size:12.5px;padding:6px 8px;white-space:nowrap}
+table.jt td{padding:7px 8px;border-top:1px solid var(--line);white-space:nowrap}
+.hgrid table.jt th,.hgrid table.jt td{text-align:left}
+.hgrid table.jt td button{width:auto;height:auto;border:0;padding:2px 6px}
 /* modal */
 .ov{position:fixed;inset:0;background:color-mix(in srgb,#000 45%,transparent);z-index:20;display:grid;place-items:center;padding:16px}
 .modal{background:var(--surface);border-radius:14px;max-width:460px;width:100%;max-height:90vh;overflow:auto;padding:20px;border:1px solid var(--line)}
@@ -196,7 +203,7 @@ const when=s=>{const n=daysTo(s);if(n===0)return['hoje','warn'];if(n===1)return[
 const pillWhen=s=>{if(!s)return'';const[t,c]=when(s);return`<span class="pill ${c}">${esc(t)}</span>`};
 
 /* ---------- dados ---------- */
-const COLS=['parcelas','cartoes','fixas','feira','habitos','marcas','compromissos','metas','lancamentos','contas','poupanca','casa','marina','pets','config'];
+const COLS=['ponto','visitas','parcelas','cartoes','fixas','feira','habitos','marcas','compromissos','metas','lancamentos','contas','poupanca','casa','marina','pets','config'];
 const S={};COLS.forEach(c=>S[c]=[]);
 let db=null,ready=false;
 const cfg=id=>(S.config.find(d=>d.id===id)||{});
@@ -207,7 +214,7 @@ async function patch(col,id,data){try{await db.collection(col).doc(id).update(da
 async function remove(col,id){try{await db.collection(col).doc(id).delete();flash('Apagado')}catch(e){flash('Não consegui apagar: '+(e.message||e.code||'erro'))}}
 
 /* ---------- formulários ---------- */
-const CATS_FIN=['Cartão de crédito','Casa','Alimentação','Marina','Kiara e Diana','Família','Saúde','Autocuidado','Transporte','Lazer','Estudos','Compras','Outros'];
+const CATS_FIN=['Cartão de crédito','Funcionárias','Casa','Alimentação','Marina','Kiara e Diana','Família','Saúde','Autocuidado','Transporte','Lazer','Estudos','Compras','Outros'];
 const ICON_LIST=Object.keys(ICONS);
 const FEIRA_CATS=['Hortifrúti','Açougue e peixaria','Frios e laticínios','Mercearia','Padaria','Bebidas','Limpeza','Higiene','Marina','Kiara e Diana','Outros'];
 const FORMS={
@@ -217,6 +224,7 @@ const FORMS={
   lancamentos:{t:'Lançamento',f:[{k:'tipo',l:'Tipo',type:'select',o:['despesa','receita'],def:()=>'despesa'},{k:'descricao',l:'Descrição',req:1},{k:'valor',l:'Valor (R$)',type:'number',req:1},{k:'categoria',l:'Categoria',type:'select',o:CATS_FIN},{k:'data',l:'Data',type:'date',def:TODAY}]},
   contas:{t:'Conta a pagar',f:[{k:'descricao',l:'Conta',req:1},{k:'valor',l:'Valor (R$)',type:'number'},{k:'vencimento',l:'Vencimento',type:'date',req:1},{k:'categoria',l:'Categoria',type:'select',o:CATS_FIN},{k:'mensal',l:'Repete todo mês?',type:'select',o:['sim','não'],def:()=>'sim'}]},
   poupanca:{t:'Meta de economia',f:[{k:'meta',l:'Para quê',req:1},{k:'alvo',l:'Valor alvo (R$)',type:'number',req:1},{k:'guardado',l:'Já guardado (R$)',type:'number',def:()=>0},{k:'prazo',l:'Prazo',type:'date'}]},
+  visitas:{t:'Ida da Sil',f:[{k:'data',l:'Dia',type:'date',req:1,def:TODAY},{k:'tipo',l:'Tipo',type:'select',o:['dia','noite','dia e noite']},{k:'valor',l:'Valor (R$)',type:'number',def:()=>cfg('funcionarias').valorSil??''},{k:'nota',l:'Observação',type:'textarea'}]},
   parcelas:{t:'Compra parcelada',f:[{k:'descricao',l:'O que comprou',req:1},{k:'cartao',l:'Cartão',type:'select',o:()=>[...S.cartoes.map(c=>c.nome),'Outro']},{k:'total',l:'Valor total da compra (R$)',type:'number',req:1},{k:'n',l:'Em quantas parcelas',type:'number',req:1,ph:'ex.: 10'},{k:'inicio',l:'Primeira parcela na fatura de',type:'select',o:()=>mesesOpc()}]},
   cartoes:{t:'Cartão de crédito',f:[{k:'nome',l:'Cartão (ex.: Nubank, Itaú Visa)',req:1},{k:'faturaMes',l:'Valor a pagar da fatura deste mês (R$)',type:'number'},{k:'dia',l:'Dia do vencimento da fatura',type:'number',req:1,ph:'ex.: 10'},{k:'limite',l:'Limite (R$)',type:'number'}]},
   fixas:{t:'Conta fixa',f:[{k:'nome',l:'Conta',req:1},{k:'valor',l:'Valor por mês (R$)',type:'number',req:1},{k:'dia',l:'Dia do vencimento',type:'number',req:1,ph:'ex.: 5'},{k:'categoria',l:'Categoria',type:'select',o:CATS_FIN,def:()=>'Casa'},{k:'forma',l:'Como paga',type:'select',o:['boleto','débito automático','Pix','cartão de crédito','dinheiro']}]},
@@ -278,6 +286,12 @@ document.addEventListener('click',e=>{
   if(act==='fixa'&&doc){payFixa(doc,extra)}
   if(act==='fatura'&&doc){editFatura(doc,extra)}
   if(act==='fatpaga'&&doc){payFatura(doc,extra)}
+  if(act==='ponto'){marcaPonto(id,extra)}
+  if(act==='pontoedit'){editPonto(extra)}
+  if(act==='dormiu'){const d=S.ponto.find(x=>x.id===extra)||{};const{id:_,...r}=d;save('ponto',extra,{...r,dormiu:!d.dormiu})}
+  if(act==='fmonth'){funcMonth=extra;render()}
+  if(act==='funcaj'){editFuncCfg()}
+  if(act==='sil-lancar'){const vs=S.visitas.filter(v=>(v.data||'').startsWith(funcMonth));const t=vs.reduce((a,v)=>a+(+v.valor||0),0);const[y,m]=funcMonth.split('-');openForm('lancamentos',null,{tipo:'despesa',descricao:`Silvanei · ${MES[+m-1]} (${vs.length} idas)`,valor:t||'',categoria:'Funcionárias'})}
   if(act==='done-clear'){S.casa.filter(x=>x.feito&&x.lista===extra).forEach(x=>remove('casa',x.id))}
 });
 function toggleHabit(hid,day){const m=S.marcas.find(x=>x.id===day);const f=new Set((m&&m.feitos)||[]);f.has(hid)?f.delete(hid):f.add(hid);save('marcas',day,{feitos:[...f]})}
@@ -285,7 +299,7 @@ const addBtn=(col,label='Adicionar',extra)=>`<button class="btn ghost" data-act=
 const editBtn=(col,id)=>`<button class="icon-btn" data-act="edit" data-col="${col}" data-id="${id}" aria-label="Editar">editar</button>`;
 
 /* ---------- seções ---------- */
-const TABS=[['hoje','Hoje','notas'],['habitos','Hábitos','autocuidado'],['agenda','Agenda','agenda'],['metas','Metas','metas'],['financas','Finanças','financas'],['feira','Feira do mês','compras'],['casa','Casa','casa'],['marina','Marina','familia'],['cachorras','Kiara e Diana','saude']];
+const TABS=[['hoje','Hoje','notas'],['habitos','Hábitos','autocuidado'],['agenda','Agenda','agenda'],['metas','Metas','metas'],['financas','Finanças','financas'],['feira','Feira do mês','compras'],['casa','Casa','casa'],['funcionarias','Funcionárias','trabalho'],['marina','Marina','familia'],['cachorras','Kiara e Diana','saude']];
 const route=()=>{const h=location.hash.slice(1);return TABS.some(t=>t[0]===h)?h:'hoje'};
 function renderTabs(){const r=route();$('#tabs').innerHTML=TABS.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}${l}</a>`).join('')}
 
@@ -467,6 +481,46 @@ function V_feira(){const all=S.feira;const falta=all.filter(x=>!x.comprado);cons
   ${all.length?`<div class="grid" style="margin-top:14px">${cats.map(c=>{const it=all.filter(x=>(x.categoria||'Outros')===c).sort((a,b)=>(a.comprado-b.comprado)||String(a.nome).localeCompare(b.nome));
    return`<section class="card"><div class="spread"><h3>${esc(c)}</h3>${addBtn('feira','Item',{categoria:c})}</div><ul class="items">${it.map(x=>`<li><button class="check ${x.comprado?'on':''}" data-act="toggle" data-col="feira" data-id="${x.id}" aria-label="Comprado: ${esc(x.nome)}"></button><div class="grow ${x.comprado?'done':''}">${esc(x.nome)}${x.qtd?` <span class="muted">· ${esc(x.qtd)}</span>`:''}</div>${x.preco?`<span class="num muted">${brl(x.preco)}</span>`:''}${editBtn('feira',x.id)}</li>`).join('')}</ul></section>`}).join('')}</div>`:'<p class="empty" style="margin-top:14px">A lista está vazia. Toque em “+ Item” para começar, ou me mande sua lista que eu coloco tudo aqui.</p>'}`}
 
+let funcMonth=TODAY().slice(0,7);
+const PONTO=[['entrada','Entrada'],['almoco','Saída almoço'],['volta','Volta almoço'],['saida','Saída']];
+const hm=t=>{if(!t)return null;const[h,m]=t.split(':').map(Number);return h*60+m};
+const fmtH=min=>{const s=min<0?'-':'';min=Math.abs(Math.round(min));return`${s}${Math.floor(min/60)}h${pad(min%60)}`};
+function minutos(d){if(!d||!d.entrada||!d.saida)return null;let t=hm(d.saida)-hm(d.entrada);if(d.almoco&&d.volta)t-=hm(d.volta)-hm(d.almoco);return t>0?t:null}
+function marcaPonto(campo,dia){const d=S.ponto.find(x=>x.id===dia)||{};const{id:_,...r}=d;const n=new Date();save('ponto',dia,{...r,[campo]:`${pad(n.getHours())}:${pad(n.getMinutes())}`});flash('Horário registrado')}
+function editPonto(dia){const d=S.ponto.find(x=>x.id===dia)||{};
+  $('#modal-root').innerHTML=`<div class="ov"><form class="modal" id="pf"><h4>Jornada da Beta</h4><p class="muted" style="margin-top:-6px">${DIA[parse(dia).getDay()]}, ${fmtDate(dia)}</p>
+  ${PONTO.map(([k,l])=>`<div class="fld"><label for="p-${k}">${l}</label><input id="p-${k}" type="time" value="${esc(d[k]||'')}"></div>`).join('')}
+  <div class="fld"><label for="p-dormiu">Dormiu aqui?</label><select id="p-dormiu"><option ${!d.dormiu?'selected':''}>não</option><option ${d.dormiu?'selected':''}>sim</option></select></div>
+  <div class="fld"><label for="p-nota">Observação (falta, folga, atestado…)</label><input id="p-nota" value="${esc(d.nota||'')}"></div>
+  <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" onclick="document.getElementById('modal-root').innerHTML=''">Cancelar</button><button class="btn">Salvar</button></div></form></div>`;
+  $('#pf').onsubmit=e=>{e.preventDefault();const o={};PONTO.forEach(([k])=>o[k]=$('#p-'+k).value);o.dormiu=$('#p-dormiu').value==='sim';o.nota=$('#p-nota').value;$('#modal-root').innerHTML='';save('ponto',dia,o);flash('Jornada salva')}}
+function editFuncCfg(){const c=cfg('funcionarias');$('#modal-root').innerHTML=`<div class="ov"><form class="modal" id="cf"><h4>Ajustes</h4>
+  <div class="fld"><label for="c-j">Jornada diária da Beta (horas)</label><input id="c-j" type="text" inputmode="decimal" value="${c.jornada??8}"></div>
+  <div class="fld"><label for="c-v">Valor padrão por ida da Sil (R$)</label><input id="c-v" type="text" inputmode="decimal" placeholder="ex.: 150,00" value="${c.valorSil!=null?Number(c.valorSil).toLocaleString('pt-BR'):''}"></div>
+  <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" onclick="document.getElementById('modal-root').innerHTML=''">Cancelar</button><button class="btn">Salvar</button></div></form></div>`;
+  $('#cf').onsubmit=e=>{e.preventDefault();save('config','funcionarias',{jornada:numBR($('#c-j').value)??8,valorSil:numBR($('#c-v').value)});$('#modal-root').innerHTML='';flash('Ajustes salvos')}}
+function V_funcionarias(){const[y,m]=funcMonth.split('-').map(Number);const nd=new Date(y,m,0).getDate();const hoje=TODAY();const jorn=(cfg('funcionarias').jornada??8)*60;
+  const dias=[...Array(nd)].map((_,i)=>`${funcMonth}-${pad(i+1)}`).filter(d=>{const w=parse(d).getDay();return(w>=1&&w<=5&&d<=hoje)||S.ponto.some(x=>x.id===d)});
+  const reg=d=>S.ponto.find(x=>x.id===d);
+  const trab=dias.filter(d=>minutos(reg(d))!=null);const tot=trab.reduce((a,d)=>a+minutos(reg(d)),0);
+  const uteis=dias.filter(d=>{const w=parse(d).getDay();return w>=1&&w<=5}).length;const saldo=tot-trab.length*jorn;
+  const noites=dias.filter(d=>reg(d)?.dormiu).length;
+  const h=reg(hoje)||{};const ehUtil=(()=>{const w=new Date().getDay();return w>=1&&w<=5})();
+  const vs=S.visitas.filter(v=>(v.data||'').startsWith(funcMonth)).sort((a,b)=>(a.data||'').localeCompare(b.data||''));const totSil=vs.reduce((a,v)=>a+(+v.valor||0),0);
+  return`<h2>Funcionárias</h2><div class="spread"><p class="lead" style="margin:0">${MES[m-1]} de ${y}</p><div class="row"><button class="btn ghost" data-act="fmonth" data-extra="${shiftMonth(funcMonth,-1)}" aria-label="Mês anterior">‹</button><button class="btn ghost" data-act="fmonth" data-extra="${hoje.slice(0,7)}">Mês atual</button><button class="btn ghost" data-act="fmonth" data-extra="${shiftMonth(funcMonth,1)}" aria-label="Próximo mês">›</button><button class="btn ghost" data-act="funcaj">Ajustes</button></div></div>
+  <div class="grid" style="margin-top:14px">
+   <section class="card"><h3>${ICONS.trabalho} Beta · hoje</h3>${ehUtil||reg(hoje)?`<div class="ponto">${PONTO.map(([k,l])=>`<div class="pt"><span class="muted">${l}</span>${h[k]?`<button class="btn ghost num" data-act="pontoedit" data-extra="${hoje}">${h[k]}</button>`:`<button class="btn" data-act="ponto" data-id="${k}" data-extra="${hoje}">Agora</button>`}</div>`).join('')}</div>
+    <div class="spread" style="margin-top:10px"><label class="row" style="gap:8px"><button class="check ${h.dormiu?'on':''}" data-act="dormiu" data-extra="${hoje}" aria-label="Dormiu aqui hoje"></button>Dorme aqui hoje</label>${minutos(h)!=null?`<span class="pill ok">${fmtH(minutos(h))} trabalhadas</span>`:''}</div>`:'<p class="empty">Hoje não é dia de trabalho da Beta.</p>'}</section>
+   <section class="card"><h3>${ICONS.metas} Beta · resumo do mês</h3><div class="stats"><div><div class="muted">Dias trabalhados</div><div class="stat num">${trab.length}<span class="muted" style="font-size:14px"> de ${uteis}</span></div></div><div><div class="muted">Horas no mês</div><div class="stat num">${fmtH(tot)}</div></div><div><div class="muted">Saldo de horas</div><div class="stat num" style="color:${saldo<0?'var(--bad)':'var(--ok)'}">${saldo>0?'+':''}${fmtH(saldo)}</div></div><div><div class="muted">Noites que dormiu</div><div class="stat num">${noites}</div></div></div>
+    <p class="muted" style="margin:8px 0 0">Saldo comparado com ${fmtH(jorn)} por dia trabalhado. Dá para mudar em Ajustes.</p></section>
+   <section class="card"><div class="spread"><h3>${ICONS.familia} Sil · idas no mês</h3>${addBtn('visitas','Registrar ida',{data:hoje})}</div>
+    <div class="stats"><div><div class="muted">Idas</div><div class="stat num">${vs.length}</div></div><div><div class="muted">Gasto no mês</div><div class="stat num">${brl(totSil)}</div></div></div>
+    ${vs.length?`<ul class="items" style="margin-top:8px">${vs.map(v=>`<li><div class="grow">${DIA[parse(v.data).getDay()]}, ${fmtShort(v.data)} <span class="muted">· ${esc(v.tipo||'')}</span>${v.nota?`<div class="muted">${esc(v.nota)}</div>`:''}</div><span class="num">${brl(v.valor)}</span>${editBtn('visitas',v.id)}</li>`).join('')}</ul>
+    <div class="row" style="margin-top:10px"><button class="btn ghost" data-act="sil-lancar">Lançar o total em Finanças</button></div>`:`<p class="empty">Nenhuma ida registrada neste mês.${cfg('funcionarias').valorSil==null?' Defina o valor padrão por ida em Ajustes para não precisar digitar toda vez.':''}</p>`}</section>
+  </div>
+  <section class="card" style="margin-top:14px"><h3>${ICONS.agenda} Beta · jornada do mês</h3>${dias.length?`<div class="hgrid"><table class="jt"><tr><th>Dia</th>${PONTO.map(([,l])=>`<th>${l}</th>`).join('')}<th>Horas</th><th>Dormiu</th><th></th></tr>
+   ${[...dias].reverse().map(d=>{const r=reg(d)||{};const mi=minutos(r);return`<tr><td class="n">${DIA[parse(d).getDay()].slice(0,3)} ${fmtShort(d)}</td>${PONTO.map(([k])=>`<td class="num">${r[k]||'–'}</td>`).join('')}<td class="num"><b>${mi!=null?fmtH(mi):(r.nota?esc(r.nota):'–')}</b></td><td>${r.dormiu?'sim':''}</td><td><button class="icon-btn" data-act="pontoedit" data-extra="${d}">editar</button></td></tr>`}).join('')}</table></div>`:'<p class="empty">Os dias úteis do mês aparecem aqui conforme forem passando.</p>'}</section>`}
+
 function V_casa(){const L=[['comprar','O que comprar','compras'],['ajeitar','O que ajeitar','tarefas'],['instalar','O que instalar','casa']];
   return`<h2>Casa</h2><p class="lead">Três listas para a casa. Marque o que já resolveu.</p><div class="grid">${L.map(([k,t,i])=>{const it=S.casa.filter(x=>x.lista===k).sort((a,b)=>(a.feito-b.feito)||(a.criadoEm-b.criadoEm));const nd=it.filter(x=>x.feito).length;
    return`<section class="card"><div class="spread"><h3>${ICONS[i]} ${t}</h3>${addBtn('casa','Item',{lista:k})}</div>${it.length?`<ul class="items">${it.map(x=>`<li><button class="check ${x.feito?'on':''}" data-act="toggle" data-col="casa" data-id="${x.id}" aria-label="Concluir ${esc(x.texto)}"></button><div class="grow ${x.feito?'done':''}">${esc(x.texto)}${x.onde?`<div class="muted">${esc(x.onde)}</div>`:''}</div>${editBtn('casa',x.id)}</li>`).join('')}</ul>`:'<p class="empty">Lista vazia.</p>'}
@@ -485,7 +539,7 @@ function V_cachorras(){const P=[['Kiara','2 anos'],['Diana','7 anos · fase sên
    return`<section class="card"><div class="spread"><div><div class="petname">${n}</div><div class="muted">${s}</div></div>${addBtn('pets','Cuidado',{pet:n})}</div>
    <h3 style="margin-top:14px">Próximos</h3>${lembretes(prox)}<h3 style="margin-top:14px">Histórico</h3>${recList(rs.slice(0,15).map(r=>({...r,titulo:`${r.tipo}: ${r.titulo}${r.pet==='as duas'?' (as duas)':''}`})),'pets')}</section>`}).join('')}</div>`}
 
-const VIEWS={feira:V_feira,hoje:V_hoje,habitos:V_habitos,agenda:V_agenda,metas:V_metas,financas:V_financas,casa:V_casa,marina:V_marina,cachorras:V_cachorras};
+const VIEWS={funcionarias:V_funcionarias,feira:V_feira,hoje:V_hoje,habitos:V_habitos,agenda:V_agenda,metas:V_metas,financas:V_financas,casa:V_casa,marina:V_marina,cachorras:V_cachorras};
 function render(){renderTabs();const d=new Date();const h=d.getHours();
   $('#hello').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', Carol';
   $('#today').textContent=`${DIA[d.getDay()]}, ${d.getDate()} de ${MES[d.getMonth()]} de ${d.getFullYear()}`;
