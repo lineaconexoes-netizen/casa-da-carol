@@ -149,6 +149,13 @@ table.jt th{text-align:left;font-weight:600;color:var(--soft);font-size:12.5px;p
 table.jt td{padding:7px 8px;border-top:1px solid var(--line);white-space:nowrap}
 .hgrid table.jt th,.hgrid table.jt td{text-align:left}
 .hgrid table.jt td button{width:auto;height:auto;border:0;padding:2px 6px}
+.card.alerta{background:color-mix(in srgb,var(--warn) 10%,var(--surface));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--warn) 45%,transparent)}
+.card.alerta h3{color:var(--warn)}
+.semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.semana .dia{display:grid;gap:2px;padding:10px 8px;border-radius:12px;background:var(--chip);font-size:13px;min-width:0}
+.semana .dia b{font-weight:600;overflow-wrap:anywhere}
+.semana .dia.hoje{background:var(--accent);color:var(--onaccent)}.semana .dia.hoje .muted{color:inherit;opacity:.8}
+@media (max-width:560px){.semana{grid-template-columns:repeat(2,minmax(0,1fr))}}
 /* modal */
 .ov{position:fixed;inset:0;background:color-mix(in srgb,#000 45%,transparent);z-index:20;display:grid;place-items:center;padding:16px}
 .modal{background:var(--surface);border-radius:14px;max-width:460px;width:100%;max-height:90vh;overflow:auto;padding:20px;border:1px solid var(--line)}
@@ -203,7 +210,7 @@ const when=s=>{const n=daysTo(s);if(n===0)return['hoje','warn'];if(n===1)return[
 const pillWhen=s=>{if(!s)return'';const[t,c]=when(s);return`<span class="pill ${c}">${esc(t)}</span>`};
 
 /* ---------- dados ---------- */
-const COLS=['ponto','visitas','parcelas','cartoes','fixas','feira','habitos','marcas','compromissos','metas','lancamentos','contas','poupanca','casa','marina','pets','config'];
+const COLS=['skin','ponto','visitas','parcelas','cartoes','fixas','feira','habitos','marcas','compromissos','metas','lancamentos','contas','poupanca','casa','marina','pets','config'];
 const S={};COLS.forEach(c=>S[c]=[]);
 let db=null,ready=false;
 const cfg=id=>(S.config.find(d=>d.id===id)||{});
@@ -286,6 +293,7 @@ document.addEventListener('click',e=>{
   if(act==='fixa'&&doc){payFixa(doc,extra)}
   if(act==='fatura'&&doc){editFatura(doc,extra)}
   if(act==='fatpaga'&&doc){payFatura(doc,extra)}
+  if(act==='skin'){const d=S.skin.find(x=>x.id===extra)||{};const{id:_,...r}=d;save('skin',extra,{...r,[id]:!d[id]})}
   if(act==='ponto'){marcaPonto(id,extra)}
   if(act==='pontoedit'){editPonto(extra)}
   if(act==='dormiu'){const d=S.ponto.find(x=>x.id===extra)||{};const{id:_,...r}=d;save('ponto',extra,{...r,dormiu:!d.dormiu})}
@@ -299,7 +307,7 @@ const addBtn=(col,label='Adicionar',extra)=>`<button class="btn ghost" data-act=
 const editBtn=(col,id)=>`<button class="icon-btn" data-act="edit" data-col="${col}" data-id="${id}" aria-label="Editar">editar</button>`;
 
 /* ---------- seções ---------- */
-const TABS=[['hoje','Hoje','notas'],['habitos','Hábitos','autocuidado'],['agenda','Agenda','agenda'],['metas','Metas','metas'],['financas','Finanças','financas'],['feira','Feira do mês','compras'],['casa','Casa','casa'],['funcionarias','Funcionárias','trabalho'],['marina','Marina','familia'],['cachorras','Kiara e Diana','saude']];
+const TABS=[['hoje','Hoje','notas'],['habitos','Hábitos','autocuidado'],['agenda','Agenda','agenda'],['metas','Metas','metas'],['financas','Finanças','financas'],['feira','Feira do mês','compras'],['casa','Casa','casa'],['funcionarias','Funcionárias','trabalho'],['skincare','Skincare','autocuidado'],['marina','Marina','familia'],['cachorras','Kiara e Diana','saude']];
 const route=()=>{const h=location.hash.slice(1);return TABS.some(t=>t[0]===h)?h:'hoje'};
 function renderTabs(){const r=route();$('#tabs').innerHTML=TABS.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}${l}</a>`).join('')}
 
@@ -338,6 +346,7 @@ function V_hoje(){const t=TODAY();const ag=S.compromissos.filter(c=>c.data===t).
   <div class="grid">
    <section class="card"><h3>${ICONS.agenda} Agenda de hoje</h3>${agendaList(ag,false)}${amanha.length?`<p class="muted" style="margin:10px 0 0">Amanhã: ${amanha.map(c=>esc((c.hora?c.hora+' ':'')+c.titulo)).join(' · ')}</p>`:''}<div class="quick">${addBtn('compromissos','Compromisso')}</div></section>
    <section class="card"><h3>${ICONS.autocuidado} Hábitos de hoje</h3>${habitsToday()}</section>
+   <section class="card"><h3>${ICONS.autocuidado} Skincare de hoje</h3>${skinHoje()}<p class="muted" style="margin:8px 0 0"><a href="#skincare" style="color:var(--accent)">Ver os passos</a></p></section>
    <section class="card"><h3>${ICONS.tarefas} Lembretes</h3>${lembretes(proximos())}</section>
    <section class="card"><h3>${ICONS.metas} Meta em destaque</h3>${g?metaCard(g,true):'<p class="empty">Cadastre suas metas do semestre na aba Metas.</p>'}</section>
    <section class="card"><h3>${ICONS.financas} Dinheiro no mês</h3><div class="stats"><div><div class="muted">Gasto até agora</div><div class="stat num">${brl(fin.desp)}</div></div><div><div class="muted">Sobra</div><div class="stat num">${brl(fin.rec-fin.desp)}</div></div></div></section>
@@ -521,6 +530,48 @@ function V_funcionarias(){const[y,m]=funcMonth.split('-').map(Number);const nd=n
   <section class="card" style="margin-top:14px"><h3>${ICONS.agenda} Beta · jornada do mês</h3>${dias.length?`<div class="hgrid"><table class="jt"><tr><th>Dia</th>${PONTO.map(([,l])=>`<th>${l}</th>`).join('')}<th>Horas</th><th>Dormiu</th><th></th></tr>
    ${[...dias].reverse().map(d=>{const r=reg(d)||{};const mi=minutos(r);return`<tr><td class="n">${DIA[parse(d).getDay()].slice(0,3)} ${fmtShort(d)}</td>${PONTO.map(([k])=>`<td class="num">${r[k]||'–'}</td>`).join('')}<td class="num"><b>${mi!=null?fmtH(mi):(r.nota?esc(r.nota):'–')}</b></td><td>${r.dormiu?'sim':''}</td><td><button class="icon-btn" data-act="pontoedit" data-extra="${d}">editar</button></td></tr>`}).join('')}</table></div>`:'<p class="empty">Os dias úteis do mês aparecem aqui conforme forem passando.</p>'}</section>`}
 
+const SK={
+ inicioTret:'2026-11-02',
+ manha:[['Bioderma Sensibio H2O','Limpeza leve. Se acordar muito oleosa, usar o Darrow Actine.'],
+  ['Melano CC ou Medicube Deep Vita C Capsule Cream','Vitamina C. Um dos dois, nunca os dois juntos. O Deep Vita C é creme e já hidrata: pule o passo 5.'],
+  ['Glow Recipe Watermelon Niacinamide','Opcional nos dias corridos.'],
+  ['Olhos: The Ordinary Caffeine 5% e depois Eucerin Anti-Pigment','Cafeína para o inchaço, Anti-Pigment para a olheira.'],
+  ['Eucerin DermoPure Oil Control','Hidratante leve. Pule se usou o Deep Vita C Cream.'],
+  ['ISDIN Fusion Water FPS 60','Obrigatório. Reaplicar se ficar exposta ao sol.']],
+ noiteIni:['Hada Labo Oil Cleansing','Darrow Actine','Secar bem o rosto'],
+ noiteFim:['Eucerin Anti-Pigment nos olhos','Laneige Lip Sleeping Mask nos lábios'],
+ semana:{1:'Retinoide',2:'Recuperação',3:'Ácido',4:'Retinoide',5:'Recuperação',6:'Exosome Shot',0:'Recuperação'},
+ blocos:{
+  'Retinoide':{passos:[['Vitanol-A (tretinoína 0,1%)','Um grão de ervilha para o rosto todo, com a pele bem seca.'],['Esperar uns 20 minutos',''],['Medicube Collagen Jelly Cream','']],obs:'Se arder ou descamar: sanduíche com Cicaplast (antes e depois) ou trocar pelo Celimax Retinal Shot, que é mais suave.'},
+  'Ácido':{passos:[['The Ordinary Glycolic Acid 7% ou Creamy Salicílico 2%','Glicólico para manchas e textura; salicílico para espinhas e cravos. Pode alternar semana sim, semana não.'],['Glow Recipe Watermelon Niacinamide',''],['Medicube Collagen Jelly Cream','']]},
+  'Exosome Shot':{passos:[['Medicube One Day Exosome Shot 7500','Pinica um pouco, é normal.'],['SKIN1004 Centella Ampoule',''],['La Roche-Posay Cicaplast Baume B5+','']],obs:'Nenhum ácido, retinoide ou vitamina C nesta noite nem na manhã seguinte.'},
+  'Recuperação':{passos:[['SKIN1004 Centella Ampoule',''],['Cetaphil Sérum Hidratante 48h',''],['Medicube Collagen Jelly Cream','Se a pele estiver irritada, trocar pelo Cicaplast.']]}},
+ naoMisturar:['Tretinoína, Retinal Shot, ácidos e Exosome Shot nunca na mesma noite.','Nunca usar tretinoína e Retinal Shot juntos. O Retinal é substituto, não complemento.','Vitamina C só de manhã, um produto de cada vez.','Começando agora com a tretinoína: só às segundas nas 2 primeiras semanas, depois incluir a quinta. Se estiver tolerando bem depois de um mês, dá para trocar o domingo por mais uma noite de retinoide.'],
+ cuidados:['A tretinoína 0,1% é a concentração mais forte e precisa de receita. Siga a frequência do dermatologista, se for diferente desta.','Se estiver grávida ou amamentando, confirme com o médico antes de usar tretinoína, Retinal Shot e ácido salicílico. Nesse caso, troque as noites de retinoide por noites de recuperação ou de glicólico.'],
+ produtos:[['Limpeza','Hada Labo Gokujyun Oil Cleansing, Bioderma Sensibio H2O, Darrow Actine'],['Séruns','Melano CC, Glow Recipe Watermelon Niacinamide, Cetaphil Sérum Hidratante 48h, The Ordinary Caffeine Solution 5% + EGCG, SKIN1004 Centella Ampoule'],['Ácidos','The Ordinary Glycolic Acid 7%, Creamy Salicílico 2%, Medicube One Day Exosome Shot 7500'],['Retinoides','Vitanol-A (tretinoína 0,1%), Celimax Retinal Shot'],['Olhos','Eucerin Anti-Pigment'],['Hidratação e barreira','Eucerin DermoPure Oil Control, La Roche-Posay Cicaplast Baume B5+, Medicube Collagen Jelly Cream, Medicube Deep Vita C Capsule Cream'],['Máscaras','Medicube Collagen Night Wrapping Mask, Laneige Lip Sleeping Mask (2 un)'],['Proteção','ISDIN Fusion Water FPS 60']]};
+function noiteDe(d){const w=parse(d).getDay();let t=SK.semana[w],nota='';
+  if(w===4&&daysTo(d)>=-400&&mesDiff(SK.inicioTret.slice(0,7),d.slice(0,7))>=0&&(parse(d)-parse(SK.inicioTret))/864e5<14){t='Recuperação';nota='Quinta de retinoide só entra a partir da 3ª semana de tretinoína.'}
+  return{t,nota,domingo:w===0}}
+const passoLi=([a,b],i)=>`<li><span class="pill num" style="min-width:26px;text-align:center">${i+1}</span><div class="grow"><b style="font-weight:600">${esc(a)}</b>${b?`<div class="muted">${esc(b)}</div>`:''}</div></li>`;
+function skinHoje(d=TODAY()){const r=S.skin.find(x=>x.id===d)||{};const n=noiteDe(d);
+  return`<div class="row" style="gap:16px"><label class="row" style="gap:8px"><button class="check ${r.manha?'on':''}" data-act="skin" data-id="manha" data-extra="${d}" aria-label="Rotina da manhã feita"></button>Manhã</label><label class="row" style="gap:8px"><button class="check ${r.noite?'on':''}" data-act="skin" data-id="noite" data-extra="${d}" aria-label="Rotina da noite feita"></button>Noite: <b>${n.t}${n.domingo?' + Night Wrapping Mask':''}</b></label></div>`}
+function V_skincare(){const d=TODAY();const n=noiteDe(d);const b=SK.blocos[n.t];const ordem=[1,2,3,4,5,6,0];
+  const feitos=[...Array(7)].map((_,i)=>{const x=new Date();x.setDate(x.getDate()-i);const r=S.skin.find(z=>z.id===iso(x))||{};return(r.manha?1:0)+(r.noite?1:0)}).reduce((a,c)=>a+c,0);
+  return`<h2>Skincare</h2><p class="lead">A manhã é igual todo dia. À noite, os ativos se revezam pela semana para não irritar a pele. Rotina atualizada em 02/11/2026.</p>
+  <section class="card alerta"><h3>${ICONS.saude} Cuidados importantes</h3><ul class="items">${SK.cuidados.map(c=>`<li><span>${esc(c)}</span></li>`).join('')}</ul></section>
+  <div class="grid" style="margin-top:14px">
+   <section class="card"><h3>${ICONS.agenda} Hoje · ${DIA[parse(d).getDay()]}</h3>${skinHoje(d)}<p class="muted" style="margin:10px 0 0">${feitos} de 14 rotinas feitas nos últimos 7 dias.</p></section>
+   <section class="card"><h3>${ICONS.autocuidado} Manhã (todo dia)</h3><ul class="items">${SK.manha.map(passoLi).join('')}</ul></section>
+   <section class="card"><h3>${ICONS.notas} Noite de hoje: ${n.t}</h3>${n.nota?`<p class="pill warn" style="white-space:normal;margin:0 0 8px">${esc(n.nota)}</p>`:''}
+    <ul class="items">${[...SK.noiteIni.map(x=>[x,'']),...b.passos,...(n.domingo?[['Medicube Collagen Night Wrapping Mask','Por cima de tudo. Só 5 ml, por isso 1x por semana.']]:[]),...SK.noiteFim.map(x=>[x,''])].map(passoLi).join('')}</ul>
+    ${b.obs?`<p class="muted" style="margin:8px 0 0">${esc(b.obs)}</p>`:''}</section>
+  </div>
+  <section class="card" style="margin-top:14px"><h3>${ICONS.agenda} Noites da semana</h3><div class="semana">${ordem.map(w=>{const t=SK.semana[w];return`<div class="dia ${parse(d).getDay()===w?'hoje':''}"><span class="muted">${DIA[w].slice(0,3)}</span><b>${t}${w===0?' + máscara':''}</b></div>`}).join('')}</div>
+   <p class="muted" style="margin:10px 0 0">Toda noite começa com Hada Labo Oil Cleansing, Darrow Actine e secar bem o rosto, e termina com Eucerin Anti-Pigment nos olhos e Laneige Lip Sleeping Mask.</p></section>
+  <div class="grid" style="margin-top:14px">${Object.entries(SK.blocos).map(([k,v])=>`<section class="card"><h3>${k}</h3><ul class="items">${v.passos.map(passoLi).join('')}</ul>${v.obs?`<p class="muted" style="margin:8px 0 0">${esc(v.obs)}</p>`:''}</section>`).join('')}</div>
+  <div class="grid" style="margin-top:14px"><section class="card"><h3>${ICONS.tarefas} O que não misturar</h3><ul class="items">${SK.naoMisturar.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ul></section>
+   <section class="card"><h3>${ICONS.compras} Produtos</h3><ul class="items">${SK.produtos.map(([g,l])=>`<li style="display:block"><b style="font-weight:600">${g}</b><div class="muted">${esc(l)}</div></li>`).join('')}</ul></section></div>`}
+
 function V_casa(){const L=[['comprar','O que comprar','compras'],['ajeitar','O que ajeitar','tarefas'],['instalar','O que instalar','casa']];
   return`<h2>Casa</h2><p class="lead">Três listas para a casa. Marque o que já resolveu.</p><div class="grid">${L.map(([k,t,i])=>{const it=S.casa.filter(x=>x.lista===k).sort((a,b)=>(a.feito-b.feito)||(a.criadoEm-b.criadoEm));const nd=it.filter(x=>x.feito).length;
    return`<section class="card"><div class="spread"><h3>${ICONS[i]} ${t}</h3>${addBtn('casa','Item',{lista:k})}</div>${it.length?`<ul class="items">${it.map(x=>`<li><button class="check ${x.feito?'on':''}" data-act="toggle" data-col="casa" data-id="${x.id}" aria-label="Concluir ${esc(x.texto)}"></button><div class="grow ${x.feito?'done':''}">${esc(x.texto)}${x.onde?`<div class="muted">${esc(x.onde)}</div>`:''}</div>${editBtn('casa',x.id)}</li>`).join('')}</ul>`:'<p class="empty">Lista vazia.</p>'}
@@ -539,7 +590,7 @@ function V_cachorras(){const P=[['Kiara','2 anos'],['Diana','7 anos · fase sên
    return`<section class="card"><div class="spread"><div><div class="petname">${n}</div><div class="muted">${s}</div></div>${addBtn('pets','Cuidado',{pet:n})}</div>
    <h3 style="margin-top:14px">Próximos</h3>${lembretes(prox)}<h3 style="margin-top:14px">Histórico</h3>${recList(rs.slice(0,15).map(r=>({...r,titulo:`${r.tipo}: ${r.titulo}${r.pet==='as duas'?' (as duas)':''}`})),'pets')}</section>`}).join('')}</div>`}
 
-const VIEWS={funcionarias:V_funcionarias,feira:V_feira,hoje:V_hoje,habitos:V_habitos,agenda:V_agenda,metas:V_metas,financas:V_financas,casa:V_casa,marina:V_marina,cachorras:V_cachorras};
+const VIEWS={skincare:V_skincare,funcionarias:V_funcionarias,feira:V_feira,hoje:V_hoje,habitos:V_habitos,agenda:V_agenda,metas:V_metas,financas:V_financas,casa:V_casa,marina:V_marina,cachorras:V_cachorras};
 function render(){renderTabs();const d=new Date();const h=d.getHours();
   $('#hello').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', Carol';
   $('#today').textContent=`${DIA[d.getDay()]}, ${d.getDate()} de ${MES[d.getMonth()]} de ${d.getFullYear()}`;
