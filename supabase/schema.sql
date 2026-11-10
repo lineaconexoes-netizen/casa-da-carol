@@ -1,5 +1,5 @@
 -- =====================================================================
---  Vida da Carol — banco de dados
+--  Meu Painel — banco de dados
 --  Rode no Supabase: SQL Editor > New query > cole tudo > Run.
 --  Pode ser rodado mais de uma vez.
 -- =====================================================================

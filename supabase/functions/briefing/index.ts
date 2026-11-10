@@ -1,5 +1,5 @@
 // =====================================================================
-//  Vida da Carol — briefing da manhã por e-mail
+//  Meu Painel — briefing da manhã por e-mail
 //
 //  Roda sozinho todo dia (agendado pelo supabase/cron.sql). Lê os dados
 //  do sistema, monta o resumo do dia e manda por e-mail pelo Resend.
@@ -67,7 +67,7 @@ ${sec('Hábitos de hoje', habitos.length ? habitos.map((h) => li(`☐ ${esc(h.no
 ${meta ? sec('Meta em destaque', li(`<b>${esc(meta.titulo)}</b> · ${Math.round(meta.p * 100)}% feito${meta.prox ? `<br><span style="color:${C.caramelo}">Próxima etapa: ${esc(meta.prox.t)}</span>` : ''}`)) : ''}
 ${sec('Dinheiro no mês', li(`Gasto até agora: <b>${brl(desp)}</b> · Sobra: <b>${brl(rec - desp)}</b>`))}
 ${feira ? sec('Feira do mês', li(`Faltam ${feira} ${feira === 1 ? 'item' : 'itens'} na lista.`)) : ''}
-<tr><td style="padding:22px 28px 28px">${site ? `<a href="${esc(site)}" style="display:inline-block;background:${C.bordo};color:${C.creme};text-decoration:none;padding:10px 20px;border-radius:999px;font-size:15px">Abrir a Vida da Carol</a>` : ''}</td></tr>
+<tr><td style="padding:22px 28px 28px">${site ? `<a href="${esc(site)}" style="display:inline-block;background:${C.bordo};color:${C.creme};text-decoration:none;padding:10px 20px;border-radius:999px;font-size:15px">Abrir a Meu Painel</a>` : ''}</td></tr>
 </table></td></tr></table></body></html>`;
   return { assunto: `Bom dia, Carol · ${titulo}`, html };
 }
@@ -96,7 +96,7 @@ Deno.serve(async (req) => {
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: 'Vida da Carol <onboarding@resend.dev>', to: [para], subject: assunto, html }),
+      body: JSON.stringify({ from: 'Meu Painel <onboarding@resend.dev>', to: [para], subject: assunto, html }),
     });
     if (!r.ok) return new Response('erro no envio: ' + (await r.text()), { status: 502 });
     enviados.push(para);

@@ -1,4 +1,4 @@
-# Vida da Carol: site estático, sem etapa de build (igual ao Sistema Linéa)
+# Meu Painel: site estático, sem etapa de build (igual ao Sistema Linéa)
 [build]
   publish = "."
 
