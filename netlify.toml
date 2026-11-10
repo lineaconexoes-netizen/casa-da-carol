@@ -1,4 +1,4 @@
-# Casa da Carol: site estático, sem etapa de build (igual ao Sistema Linéa)
+# Vida da Carol: site estático, sem etapa de build (igual ao Sistema Linéa)
 [build]
   publish = "."
 

@@ -1,5 +1,5 @@
 -- =====================================================================
---  Casa da Carol — envio automático do briefing da manhã
+--  Vida da Carol — envio automático do briefing da manhã
 --  Rode DEPOIS de publicar a função "briefing" (veja o README).
 --  Troque SEU_PROJETO pelo código do projeto (o pedaço antes de .supabase.co).
 --  Horário: o cron usa o horário UTC. 10:00 UTC = 7:00 em Brasília.
