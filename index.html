@@ -169,6 +169,40 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--warm);border-col
 .quick input{flex:1}
 .status{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:#3A2A21;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;z-index:30;box-shadow:0 6px 20px rgba(58,42,33,.25)}
 @media (max-width:640px){h1{font-size:28px}.spread>p.lead{font-size:21px}}
+/* uso no dia a dia: botão +, folhas de atalho e barra inferior no celular */
+.bnav{display:none}
+.fab{position:fixed;right:max(20px,env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:16;width:58px;height:58px;border-radius:50%;border:0;background:var(--accent);color:var(--onaccent);display:grid;place-items:center;box-shadow:0 8px 24px rgba(58,42,33,.32)}
+.fab svg{width:26px;height:26px;stroke-width:2.2}
+.fab:active{transform:scale(.95)}
+.qa{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.qa>a,.qa>button{display:flex;align-items:center;gap:10px;min-height:54px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);text-align:left;font-weight:500;font-size:14.5px;text-decoration:none}
+.qa>[aria-current]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.qa .ico svg>:last-child:not([fill]){stroke:var(--ic2)}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.sheet-h h4{margin:0}
+a.lk{color:inherit;text-decoration:none;display:flex;align-items:center;gap:10px}
+a.lk::after{content:"›";color:var(--soft);font-size:18px;line-height:1}
+.mais-link{display:inline-block;margin-top:10px;color:var(--accent);font-size:13px}
+.card.atencao{border-color:var(--warm);box-shadow:inset 3px 0 0 var(--accent)}
+@media (min-width:861px){.fab{right:max(28px,calc((100vw - 1232px)/2 - 70px))}}
+@media (max-width:860px){
+  nav.tabs{display:none}
+  header.top{padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:12px}
+  .selo{width:40px;height:40px}.selo svg{width:22px;height:22px}
+  h1{font-size:25px}.sub{margin:0;font-size:12.5px}
+  .bnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--surface);border-top:1px solid var(--line);
+    padding:6px max(4px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(4px,env(safe-area-inset-left,0px));box-shadow:0 -4px 18px rgba(58,42,33,.08)}
+  .bnav a,.bnav button{display:grid;justify-items:center;gap:2px;font:inherit;font-size:11px;color:var(--soft);text-decoration:none;background:none;border:0;padding:4px 0;min-width:0}
+  .bnav svg{width:24px;height:24px}
+  .bnav svg>:last-child:not([fill]){stroke:var(--ic2)}
+  .bnav [aria-current]{color:var(--accent);font-weight:600}
+  .wrap{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+  .fab{bottom:calc(80px + env(safe-area-inset-bottom,0px));right:max(16px,env(safe-area-inset-right,0px))}
+  .ov{place-items:end center;padding:0}
+  .modal{border-radius:20px 20px 0 0;max-width:none;max-height:88vh;padding:18px 18px calc(22px + env(safe-area-inset-bottom,0px));border-bottom:0}
+  .modal .btn{padding:11px 12px;justify-content:center}
+  #mf>.spread>.row{flex:1;flex-wrap:nowrap;justify-content:flex-end}#mf>.spread>.row .btn{flex:1;white-space:nowrap;font-size:13.5px}
+  #mf>.spread>div:first-child:empty{display:none}
+}
 [hidden]{display:none!important}
 img{max-width:100%}
 .login{min-height:100vh;display:grid;place-items:center;padding:16px}
@@ -184,6 +218,8 @@ img{max-width:100%}
   <nav class="tabs" id="tabs" aria-label="Seções"></nav>
 </header>
 <main class="wrap" id="view"><p class="empty">Carregando seus dados…</p></main>
+<nav class="bnav" id="bnav" aria-label="Atalhos"></nav>
+<button class="fab" id="fab" data-act="quick" aria-label="Adicionar algo" title="Adicionar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
 </div>
 <div id="modal-root"></div>
 <div id="status" class="status" hidden></div>
@@ -253,7 +289,7 @@ function openForm(col,doc,preset={}){
     return`<div class="fld" ${f.only?`data-only="${f.only}"`:''}><label for="${id}">${esc(f.l)}</label>${input}</div>`}).join('');
   $('#modal-root').innerHTML=`<div class="ov" id="ov"><form class="modal" id="mf"><h4>${doc?'Editar':'Novo'}: ${esc(F.t)}</h4>${fields}
    <div class="spread"><div>${doc?`<button type="button" class="icon-btn danger" id="mdel">Apagar</button>`:''}</div>
-   <div class="row"><button type="button" class="btn ghost" id="mcancel">Cancelar</button><button class="btn">Salvar</button></div></div></form></div>`;
+   <div class="row"><button type="button" class="btn ghost" id="mcancel">Cancelar</button>${!doc&&['feira','casa'].includes(col)?'<button class="btn ghost" id="mmais">Salvar e outro</button>':''}<button class="btn">Salvar</button></div></div></form></div>`;
   const sync=()=>{const t=$('#f-tipo');document.querySelectorAll('[data-only]').forEach(el=>el.hidden=!t||t.value!==el.dataset.only)};
   $('#f-tipo')?.addEventListener('change',sync);sync();
   const close=()=>$('#modal-root').innerHTML='';
@@ -270,11 +306,12 @@ function openForm(col,doc,preset={}){
     if(col==='contas')out.pago=doc?.pago||false;
     if(col==='habitos')out.ordem=doc?.ordem??S.habitos.length;
     if(!doc)out.criadoEm=Date.now();
-    const {id,...rest}=doc||{};close();await save(col,doc?doc.id:null,doc?Object.assign({},rest,out):out);flash('Salvo')};
+    const again=e.submitter&&e.submitter.id==='mmais';const {id,...rest}=doc||{};close();await save(col,doc?doc.id:null,doc?Object.assign({},rest,out):out);flash('Salvo');
+    if(again)openForm(col,null,col==='feira'?{categoria:out.categoria}:{lista:out.lista})};
   $('#mf input,#mf select')?.focus();
 }
 document.addEventListener('click',e=>{
-  if(e.target.id==='ov-noite'){$('#modal-root').innerHTML='';return}
+  if(e.target.id==='ov-noite'||e.target.id==='ov-sheet'){$('#modal-root').innerHTML='';return}
   const b=e.target.closest('[data-act]');if(!b)return;const{act,col,id,extra}=b.dataset;
   const doc=id?S[col]?.find(d=>d.id===id):null;
   if(act==='new')openForm(col,null,extra?JSON.parse(extra):{});
@@ -302,6 +339,9 @@ document.addEventListener('click',e=>{
   if(act==='fmonth'){funcMonth=extra;render()}
   if(act==='funcaj'){editFuncCfg()}
   if(act==='sil-lancar'){const vs=S.visitas.filter(v=>(v.data||'').startsWith(funcMonth));const t=vs.reduce((a,v)=>a+(+v.valor||0),0);const[y,m]=funcMonth.split('-');openForm('lancamentos',null,{tipo:'despesa',descricao:`Silvanei · ${MES[+m-1]} (${vs.length} idas)`,valor:t||'',categoria:'Funcionárias'})}
+  if(act==='quick')quickSheet();
+  if(act==='mais')maisSheet();
+  if(act==='sheet-x'){$('#modal-root').innerHTML=''}
   if(act==='done-clear'){S.casa.filter(x=>x.feito&&x.lista===extra).forEach(x=>remove('casa',x.id))}
 });
 function toggleHabit(hid,day){const m=S.marcas.find(x=>x.id===day);const f=new Set((m&&m.feitos)||[]);f.has(hid)?f.delete(hid):f.add(hid);save('marcas',day,{feitos:[...f]})}
@@ -311,7 +351,14 @@ const editBtn=(col,id)=>`<button class="icon-btn" data-act="edit" data-col="${co
 /* ---------- seções ---------- */
 const TABS=[['hoje','Hoje','notas'],['habitos','Hábitos','autocuidado'],['agenda','Agenda','agenda'],['metas','Metas','metas'],['financas','Finanças','financas'],['feira','Feira do mês','compras'],['casa','Casa','casa'],['funcionarias','Funcionárias','trabalho'],['skincare','Skincare','autocuidado'],['marina','Marina','familia'],['cachorras','Kiara e Diana','saude']];
 const route=()=>{const h=location.hash.slice(1);return TABS.some(t=>t[0]===h)?h:'hoje'};
-function renderTabs(){const r=route();$('#tabs').innerHTML=TABS.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}${l}</a>`).join('')}
+function renderTabs(){const r=route();$('#tabs').innerHTML=TABS.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}${l}</a>`).join('');renderBnav(r)}
+const BN=[['hoje','Hoje','notas'],['agenda','Agenda','agenda'],['financas','Finanças','financas'],['feira','Feira','compras']];
+const MAIS_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>';
+function renderBnav(r){const el=$('#bnav');if(!el)return;el.innerHTML=BN.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}<span>${l}</span></a>`).join('')+`<button data-act="mais" ${BN.some(b=>b[0]===r)?'':'aria-current="page"'}>${MAIS_SVG}<span>${BN.some(b=>b[0]===r)?'Mais':esc(TABS.find(t=>t[0]===r)[1])}</span></button>`}
+function sheet(t,html){$('#modal-root').innerHTML=`<div class="ov" id="ov-sheet"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(t)}"><div class="sheet-h"><h4>${esc(t)}</h4><button class="icon-btn" data-act="sheet-x">Fechar</button></div>${html}</div></div>`}
+function maisSheet(){const r=route();sheet('Seções',`<div class="qa">${TABS.map(([k,l,i])=>`<a href="#${k}" data-act="sheet-x" ${k===r?'aria-current="page"':''}>${ic(i)}${l}</a>`).join('')}</div>`)}
+const QUICK=[['lancamentos','Gasto','financas',{tipo:'despesa'}],['lancamentos','Entrada','financas',{tipo:'receita'}],['compromissos','Compromisso','agenda'],['feira','Item da feira','compras'],['casa','Coisa da casa','casa'],['visitas','Ida da Sil','trabalho',{data:'hoje'}],['marina','Marina','familia'],['pets','Kiara e Diana','saude']];
+function quickSheet(){sheet('Adicionar',`<div class="qa">${QUICK.map(([c,l,i,x])=>`<button data-act="new" data-col="${c}" ${x?`data-extra='${esc(JSON.stringify(x.data==='hoje'?{...x,data:TODAY()}:x))}'`:''}>${ic(i)}${l}</button>`).join('')}</div>`)}
 
 function habitsToday(day=TODAY()){const m=S.marcas.find(x=>x.id===day);const f=new Set((m&&m.feitos)||[]);
   const hs=[...S.habitos].sort((a,b)=>(a.ordem??0)-(b.ordem??0));
@@ -343,16 +390,16 @@ function V_hoje(){const t=TODAY();const ag=S.compromissos.filter(c=>c.data===t).
   const amanha=S.compromissos.filter(c=>daysTo(c.data)===1).sort(sortAg);
   const metas=[...S.metas].sort((a,b)=>metaProg(a)-metaProg(b));const g=metas[0];
   const casa=['comprar','ajeitar','instalar'].map(l=>[l,S.casa.filter(x=>x.lista===l&&!x.feito).length]);casa.unshift(['a feira',S.feira.filter(x=>!x.comprado).length]);
-  const mes=t.slice(0,7);const fin=finSum(mes);
-  return`<h2>Resumo do dia</h2><p class="lead">Seu resumo do dia. Ele se atualiza sozinho sempre que você abre esta página.</p>
+  const mes=t.slice(0,7);const fin=finSum(mes);const lem=proximos();const atr=lem.filter(x=>daysTo(x.d)<=0);
+  return`<h2>Resumo do dia</h2><p class="lead">${atr.length?`${atr.length} ${atr.length===1?'coisa vence hoje ou está atrasada':'coisas vencem hoje ou estão atrasadas'}. Toque no + para anotar algo rápido.`:'Tudo em dia por aqui. Toque no + para anotar algo rápido.'}</p>
   <div class="grid">
+   <section class="card ${atr.length?'atencao':''}"><h3>${ICONS.tarefas} ${atr.length?'Precisa de atenção':'Lembretes'}</h3>${lembretes(lem)}</section>
    <section class="card"><h3>${ICONS.agenda} Agenda de hoje</h3>${agendaList(ag,false)}${amanha.length?`<p class="muted" style="margin:10px 0 0">Amanhã: ${amanha.map(c=>esc((c.hora?c.hora+' ':'')+c.titulo)).join(' · ')}</p>`:''}<div class="quick">${addBtn('compromissos','Compromisso')}</div></section>
    <section class="card"><h3>${ICONS.autocuidado} Hábitos de hoje</h3>${habitsToday()}</section>
    <section class="card"><h3>${ICONS.autocuidado} Skincare de hoje</h3>${skinHoje()}<p class="muted" style="margin:8px 0 0"><button class="btn" data-act="noite" data-extra="${parse(TODAY()).getDay()}">Ver tratamento de hoje</button></p></section>
-   <section class="card"><h3>${ICONS.tarefas} Lembretes</h3>${lembretes(proximos())}</section>
+   <section class="card"><h3>${ICONS.financas} Dinheiro no mês</h3><div class="stats"><div><div class="muted">Gasto até agora</div><div class="stat num">${brl(fin.desp)}</div></div><div><div class="muted">Sobra</div><div class="stat num">${brl(fin.rec-fin.desp)}</div></div></div><a class="mais-link" href="#financas">Abrir Finanças</a></section>
+   <section class="card"><h3>${ICONS.casa} Listas</h3><ul class="items">${casa.map(([l,n])=>`<li><a class="lk grow" href="#${l==='a feira'?'feira':'casa'}"><span class="grow">${l==='a feira'?'Falta na feira':'Para '+l}</span><span class="pill">${n} ${n===1?'item':'itens'}</span></a></li>`).join('')}</ul></section>
    <section class="card"><h3>${ICONS.metas} Meta em destaque</h3>${g?metaCard(g,true):'<p class="empty">Cadastre suas metas do semestre na aba Metas.</p>'}</section>
-   <section class="card"><h3>${ICONS.financas} Dinheiro no mês</h3><div class="stats"><div><div class="muted">Gasto até agora</div><div class="stat num">${brl(fin.desp)}</div></div><div><div class="muted">Sobra</div><div class="stat num">${brl(fin.rec-fin.desp)}</div></div></div></section>
-   <section class="card"><h3>${ICONS.casa} Casa</h3><ul class="items">${casa.map(([l,n])=>`<li><span class="grow">${l==='a feira'?'Falta na feira':'Para '+l}</span><span class="pill">${n} ${n===1?'item':'itens'}</span></li>`).join('')}</ul></section>
   </div>`}
 
 function V_habitos(){const now=new Date();const y=now.getFullYear(),m=now.getMonth();const nd=new Date(y,m+1,0).getDate();
