@@ -383,6 +383,7 @@ document.addEventListener('click',e=>{
   if(act==='refeicao'){const fe=new Set(dDoc(extra).feitas||[]);fe.has(id)?fe.delete(id):fe.add(id);dSave(extra,{feitas:[...fe]})}
   if(act==='agua'){const n=dDoc(extra).agua||0;dSave(extra,{agua:+id===n?n-1:+id})}
   if(act==='treino'){dSave(extra,{treino:!dDoc(extra).treino})}
+  if(act==='diastase'){dSave(extra,{diastase:!dDoc(extra).diastase})}
   if(act==='cardapio'){editCardapio(+extra)}
   if(act==='dieta-feira'){const tem=new Set(S.feira.map(x=>String(x.nome).toLowerCase()));const novos=DT.feira.filter(([n])=>!tem.has(n.toLowerCase()));novos.forEach(([nome,qtd,categoria])=>save('feira',null,{nome,qtd,categoria,preco:null,comprado:false,criadoEm:Date.now(),dieta:true}));flash(novos.length?`${novos.length} itens colocados na feira`:'Tudo já estava na feira')}
   if(act==='quick')quickSheet();
@@ -694,7 +695,7 @@ function V_skincare(){const d=TODAY();const n=noiteDe(d);const b=SK.blocos[n.t];
 /* ---------- dieta e treino (montados em 23/11/2026: ganhar massa e comer melhor; 65 kg, 1,74 m; sem restrições; não amamenta) ---------- */
 const DT={
  meta:[['Calorias','2.200 a 2.300 kcal'],['Proteína','110 a 130 g'],['Água','2,5 litros (10 copos)']],
- cuidados:['É uma orientação geral para ganho de massa com alimentação equilibrada. Não substitui nutricionista: se puder, leve este cardápio numa consulta para ajustar às suas medidas e exames.','Como a Marina nasceu há menos de um ano, peça liberação ao médico antes de começar o treino e confira se há diástase (separação do abdômen) ou fraqueza no assoalho pélvico.'],
+ cuidados:['É uma orientação geral para ganho de massa com alimentação equilibrada. Não substitui nutricionista: se puder, leve este cardápio numa consulta para ajustar às suas medidas e exames.','Você tem diástase: o treino foi adaptado para ajudar a fechá-la. O ideal é ter o acompanhamento de uma fisioterapeuta pélvica, que mede a abertura e ajusta os exercícios. Peça também liberação ao seu médico.'],
  ref:[['cafe','09h30','Café da manhã'],['almoco','12h30','Almoço'],['lanche','16h00','Lanche da tarde'],['jantar','19h30','Jantar'],['ceia','21h30','Ceia']],
  opcoes:{
   cafe:['2 fatias de pão integral com 2 ovos mexidos e queijo branco + 1 fruta + café com leite','Tapioca (2 colheres de goma) com frango desfiado e queijo + 1 fruta','Iogurte natural (170 g) com 3 colheres de aveia, banana e 1 colher de pasta de amendoim + 2 ovos cozidos','Cuscuz (1 xícara) com 2 ovos e queijo coalho + café com leite'],
@@ -712,9 +713,17 @@ const TR={
  semana:{1:'A',2:'Bike',3:'B',4:'Descanso',5:'A',6:'Bike',0:'Descanso'},
  nomes:{A:'Treino A · pernas e costas',B:'Treino B · glúteos e braços',Bike:'Bicicleta',Descanso:'Descanso'},
  aquece:'Aqueça 5 minutos na bicicleta, bem leve, antes do treino A ou B.',
- A:[['Agachamento livre','3 × 12','Pés na largura dos ombros, desça como quem senta numa cadeira.'],['Ponte de glúteo','3 × 15','Deitada, suba o quadril e aperte o glúteo 2 segundos lá em cima.'],['Flexão de braço com joelhos no chão','3 × 8 a 12',''],['Remada curvada com mochila ou galão','3 × 12','Coloque peso na mochila (garrafas de água ou livros).'],['Prancha','3 × 20 a 30 s','Barriga firme, sem deixar o quadril cair.']],
- B:[['Afundo alternado','3 × 10 cada perna',''],['Elevação de quadril com uma perna','3 × 10 cada perna',''],['Desenvolvimento com garrafas ou halteres','3 × 12','Empurre os pesos dos ombros para cima da cabeça.'],['Tríceps na cadeira','3 × 10','Mãos na beira de uma cadeira firme, desça e suba o corpo.'],['Dead bug (abdominal)','3 × 10','Deitada, estique braço e perna opostos sem tirar a lombar do chão.']],
+ A:[['Agachamento livre','3 × 12','Pés na largura dos ombros, desça como quem senta numa cadeira.'],['Ponte de glúteo','3 × 15','Deitada, suba o quadril e aperte o glúteo 2 segundos lá em cima.'],['Flexão na parede','3 × 10 a 12','Mãos na parede na altura do peito. Solte o ar e encolha a barriga ao empurrar.'],['Remada curvada com mochila ou galão','3 × 12','Coloque peso na mochila (garrafas de água ou livros).'],['Respiração com ativação do abdômen','2 × 10','Igual ao primeiro exercício da rotina da diástase, para fechar o treino.']],
+ B:[['Afundo alternado','3 × 10 cada perna',''],['Elevação de quadril com uma perna','3 × 10 cada perna',''],['Desenvolvimento sentada com garrafas ou halteres','3 × 12','Sentada, costas apoiadas. Solte o ar ao subir os pesos.'],['Tríceps na cadeira','3 × 10','Mãos na beira de uma cadeira firme, desça e suba o corpo.'],['Deslizar o calcanhar','2 × 10 cada perna','Igual ao da rotina da diástase.']],
  bike:[['Semanas 1 e 2','20 minutos em ritmo leve, conseguindo conversar.'],['Semanas 3 e 4','25 minutos, com 5 tiros de 30 segundos mais fortes.'],['Depois','30 minutos, alternando 2 minutos leves e 1 minuto forte.']],
+ diastase:[['Respiração com ativação do abdômen','10 vezes','Deitada de barriga para cima, joelhos dobrados. Puxe o ar abrindo as costelas. Ao soltar o ar, contraia o assoalho pélvico (como quem segura o xixi) e puxe o umbigo em direção à coluna. Segure 5 segundos.'],
+  ['Báscula da pelve','2 × 10','Na mesma posição, solte o ar e encoste a lombar no chão, girando o quadril de leve. Volte devagar.'],
+  ['Deslizar o calcanhar','2 × 10 cada perna','Com a barriga encolhida, deslize um calcanhar no chão até esticar a perna e volte. Sem deixar a lombar sair do chão.'],
+  ['Marcha deitada','2 × 10 cada perna','Barriga encolhida, tire um pé do chão com o joelho dobrado, encoste de novo e troque.'],
+  ['Ponte de glúteo com respiração','2 × 12','Solte o ar e encolha a barriga ao subir o quadril.'],
+  ['Quatro apoios com a barriga encolhida','3 × 20 segundos','A partir da 3ª semana. De quatro, encolha a barriga e mantenha as costas retas, respirando normalmente.']],
+ evitar:['Abdominal tradicional, canivete, prancha no chão e qualquer exercício em que a barriga forme um "bico" ou "cone" no meio.','Prender a respiração ao fazer força: solte o ar sempre na hora do esforço, inclusive ao pegar a Marina no colo.','Levantar da cama de frente: vire de lado e use os braços para sentar.','Se a barriga estufar no meio durante um exercício, volte para uma versão mais fácil.'],
+ teste:'Para acompanhar, uma vez por mês: deitada, joelhos dobrados, levante só um pouco a cabeça e coloque os dedos na linha do umbigo. Conte quantos dedos cabem na abertura. Anote e mostre à fisioterapeuta.',
  dicas:['Descanse 60 a 90 segundos entre as séries.','Quando as 3 séries ficarem fáceis, aumente 2 repetições ou o peso. É isso que faz o músculo crescer.','Um par de halteres de 2 a 4 kg ou um kit de elásticos ajuda muito a evoluir em casa.','Se sentir dor (não cansaço), pare o exercício e troque por outro.']
 };
 function dDoc(d=TODAY()){return S.dieta.find(x=>x.id===d)||{}}
@@ -732,7 +741,8 @@ function dietaHoje(d=TODAY()){const fe=dDoc(d).feitas||[];
 function aguaHoje(d=TODAY()){const n=dDoc(d).agua||0;return`<div class="row" style="gap:6px;flex-wrap:wrap">${[...Array(10)].map((_,i)=>`<button class="copo ${i<n?'on':''}" data-act="agua" data-id="${i+1}" data-extra="${d}" aria-label="${i+1} copos"></button>`).join('')}</div><p class="muted" style="margin:8px 0 0">${n} de 10 copos (${(n*0.25).toLocaleString('pt-BR')} L)</p>`}
 function treinoHojeCard(d=TODAY()){const t=treinoDe(d);const feito=!!dDoc(d).treino;
   const corpo=t==='A'||t==='B'?`<ul class="items">${TR[t].map(([e,r])=>`<li><span class="grow">${esc(e)}</span><span class="pill num">${r}</span></li>`).join('')}</ul>`:t==='Bike'?`<p style="margin:0">${esc(TR.bike[0][1])} <span class="muted">Depois de duas semanas, veja a evolução na aba Treino.</span></p>`:'<p class="muted" style="margin:0">Dia de descanso. Uma caminhada leve com a Marina ou as cachorras já vale.</p>';
-  return`<div class="spread" style="margin-bottom:8px"><b style="font-weight:600">${TR.nomes[t]}</b>${t!=='Descanso'?`<label class="row" style="gap:8px"><button class="check ${feito?'on':''}" data-act="treino" data-extra="${d}" aria-label="Treino feito"></button>Fiz</label>`:''}</div>${corpo}`}
+  const di=!!dDoc(d).diastase;
+  return`<div class="spread" style="margin-bottom:8px"><b style="font-weight:600">Diástase · 10 minutos, todo dia</b><label class="row" style="gap:8px"><button class="check ${di?'on':''}" data-act="diastase" data-extra="${d}" aria-label="Rotina da diástase feita"></button>Fiz</label></div><div class="spread" style="margin-bottom:8px"><b style="font-weight:600">${TR.nomes[t]}</b>${t!=='Descanso'?`<label class="row" style="gap:8px"><button class="check ${feito?'on':''}" data-act="treino" data-extra="${d}" aria-label="Treino feito"></button>Fiz</label>`:''}</div>${corpo}`}
 function V_dieta(){const d=TODAY();const w=parse(d).getDay();const ordem=[1,2,3,4,5,6,0];
   const dias7=[...Array(7)].map((_,i)=>{const x=new Date();x.setDate(x.getDate()-i);return(dDoc(iso(x)).feitas||[]).length}).reduce((a,c)=>a+c,0);
   return`<h2>Dieta</h2><p class="lead">Cardápio simples para ganhar massa e comer melhor, montado para a sua rotina (acorda às 9h, almoça por volta de 12h30, dorme às 22h). Marque as refeições ao longo do dia.</p>
@@ -751,11 +761,15 @@ function V_dieta(){const d=TODAY();const w=parse(d).getDay();const ordem=[1,2,3,
   </div>`}
 function V_treino(){const d=TODAY();const w=parse(d).getDay();const ordem=[1,2,3,4,5,6,0];
   const feitos=[...Array(7)].map((_,i)=>{const x=new Date();x.setDate(x.getDate()-i);return dDoc(iso(x)).treino?1:0}).reduce((a,c)=>a+c,0);
-  return`<h2>Treino em casa</h2><p class="lead">Força 3 vezes por semana para ganhar músculo, e a bicicleta da varanda 2 vezes para o fôlego. Cada treino leva uns 35 minutos.</p>
+  return`<h2>Treino em casa</h2><p class="lead">Todo dia, 10 minutos de exercícios para fechar a diástase. Força 3 vezes por semana para ganhar músculo, adaptada para não forçar o abdômen, e a bicicleta da varanda 2 vezes. Nas duas primeiras semanas, faça só a rotina da diástase e a bicicleta; o treino A e B entra a partir da 3ª semana.</p>
   <section class="card alerta"><h3>${ICONS.saude} Antes de começar</h3><p style="margin:0">${esc(DT.cuidados[1])}</p></section>
   <div class="grid" style="margin-top:16px">
    <section class="card"><h3>${ICONS.agenda} Hoje · ${DIA[w]}</h3>${treinoHojeCard(d)}<p class="muted" style="margin:10px 0 0">${feitos} ${feitos===1?'treino feito':'treinos feitos'} nos últimos 7 dias. A meta é 5.</p></section>
    <section class="card"><h3>${ICONS.lazer} Bicicleta</h3><ul class="items">${TR.bike.map(([a,b])=>`<li style="display:block"><b style="font-weight:600">${a}</b><div class="muted">${esc(b)}</div></li>`).join('')}</ul></section>
+  </div>
+  <div class="grid" style="margin-top:16px">
+   <section class="card"><h3>${ICONS.saude} Rotina da diástase · todo dia</h3><ul class="items">${TR.diastase.map(([e,r,o],i)=>`<li><span class="pill num" style="min-width:26px;text-align:center">${i+1}</span><div class="grow"><b style="font-weight:600">${esc(e)}</b> <span class="muted num">· ${r}</span><div class="muted">${esc(o)}</div></div></li>`).join('')}</ul></section>
+   <section class="card alerta"><h3>${ICONS.tarefas} Evite enquanto a diástase não fechar</h3><ul class="items">${TR.evitar.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ul><p class="muted" style="margin:10px 0 0">${esc(TR.teste)}</p></section>
   </div>
   <section class="card" style="margin-top:16px"><h3>${ICONS.agenda} Semana</h3><div class="semana">${ordem.map(i=>`<div class="dia ${i===w?'hoje':''}"><span class="muted">${DIA[i].slice(0,3)}</span><b>${TR.semana[i]==='A'||TR.semana[i]==='B'?'Treino '+TR.semana[i]:TR.semana[i]}</b></div>`).join('')}</div><p class="muted" style="margin:10px 0 0">${esc(TR.aquece)}</p></section>
   <div class="grid" style="margin-top:16px">${['A','B'].map(t=>`<section class="card"><h3>${ICONS.metas} ${TR.nomes[t]}</h3><ul class="items">${TR[t].map(([e,r,o],i)=>`<li><span class="pill num" style="min-width:26px;text-align:center">${i+1}</span><div class="grow"><b style="font-weight:600">${esc(e)}</b> <span class="muted num">· ${r}</span>${o?`<div class="muted">${esc(o)}</div>`:''}</div></li>`).join('')}</ul></section>`).join('')}
