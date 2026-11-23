@@ -1,4 +1,4 @@
-# Casa da Carol
+# Meu Painel
 
 Sistema pessoal da Carol: resumo do dia, hábitos, agenda, metas, finanças, feira do mês, casa, Marina, Kiara e Diana.
 Mesmo formato do Sistema Linéa: `index.html` publicado no Netlify, dados no Supabase, entrada com e-mail e senha.

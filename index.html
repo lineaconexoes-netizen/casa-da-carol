@@ -3,188 +3,275 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#6D1A36">
+<meta name="theme-color" content="#604335">
 <meta name="robots" content="noindex">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="icone-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="apple-mobile-web-app-title" content="Casa da Carol">
+<meta name="apple-mobile-web-app-title" content="Meu Painel">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Casa da Carol</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<title>Meu Painel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap">
 <style>
-:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-[hidden]{display:none!important}
-img{max-width:100%}
-/* Layout: cabeçalho com saudação, barra de seções e um painel por seção; cartões só onde agrupam algo */
+/* Rebrand nov/2026: visual do "Minhas contas" — faixa café com abas, Italiana nos títulos, Poppins no texto, cartões creme com borda fina */
 :root{
-  --creme:#F5EFE6;--bege:#E6D5C3;--areia:#C9A98B;--caramelo:#A47551;--cafe:#5C3D2E;--marsala:#955251;--bordo:#6D1A36;
-  --bg:#F3ECE3;--surface:#FFFFFF;--line:#E6D5C3;--ink:#5C3D2E;--soft:#8A6A55;--accent:#6D1A36;--accent2:#955251;--warm:#A47551;--onaccent:#F5EFE6;--chip:#EFE4D6;
-  --ok:#5E7A4E;--warn:#B07A2A;--bad:#A3343A;
-  --f-title:'Plus Jakarta Sans',system-ui,sans-serif;--f-sub:'Plus Jakarta Sans',system-ui,sans-serif;--f-body:'Plus Jakarta Sans',system-ui,sans-serif;--f-sig:'Plus Jakarta Sans',system-ui,sans-serif;--shadow:0 1px 2px rgba(92,61,46,.06),0 6px 20px rgba(92,61,46,.07);
+  --fundo:#F3EDE3;--cardc:#FFFCF7;--pim:#604335;--esc:#4A3328;--bege:#BCA186;--off:#E3DBCA;
+  --bg:#F3EDE3;--surface:#FFFCF7;--line:#E3D8C6;--ink:#3A2A21;--soft:#8A7565;--accent:#604335;--accent2:#7A5A48;--warm:#BCA186;--onaccent:#F3EDE3;--chip:#E3DBCA;--ic2:#BCA186;--aviso:#F6EBDA;
+  --ok:#5E7A4A;--warn:#9A6A1E;--bad:#9A2F15;
+  --f-title:'Italiana',Georgia,serif;--f-sub:'Poppins',-apple-system,Helvetica,Arial,sans-serif;--f-body:'Poppins',-apple-system,Helvetica,Arial,sans-serif;
+  color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#231915;--surface:#2E211B;--line:#4A3529;--ink:#F0E5D8;--soft:#C9A98B;--accent:#D88A93;--accent2:#C9877F;--warm:#C9A98B;--onaccent:#231915;--chip:#3A2A22;--ok:#9DBA86;--warn:#E0B060;--bad:#E58C8C;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#231915;--surface:#2E211B;--line:#4A3529;--ink:#F0E5D8;--soft:#C9A98B;--accent:#D88A93;--accent2:#C9877F;--warm:#C9A98B;--onaccent:#231915;--chip:#3A2A22;--ok:#9DBA86;--warn:#E0B060;--bad:#E58C8C;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1F1713;--surface:#2A201A;--line:#43342A;--ink:#EDE3D6;--soft:#B9A592;--accent:#D9BFA3;--accent2:#BCA186;--warm:#9C8168;--onaccent:#231A15;--chip:#3A2C23;--ic2:#BCA186;--aviso:#3A2C1E;--ok:#9DBA86;--warn:#E0B060;--bad:#E3907A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1F1713;--surface:#2A201A;--line:#43342A;--ink:#EDE3D6;--soft:#B9A592;--accent:#D9BFA3;--accent2:#BCA186;--warm:#9C8168;--onaccent:#231A15;--chip:#3A2C23;--ic2:#BCA186;--aviso:#3A2C1E;--ok:#9DBA86;--warn:#E0B060;--bad:#E3907A;color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;margin:0}
-.wrap{max-width:1080px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--areia);padding-bottom:14px}
-h1{font-family:var(--f-title);font-weight:600;color:var(--accent);font-size:clamp(28px,5vw,40px);margin:0;line-height:1.1;text-wrap:balance}
-.date{font-family:var(--f-sub);font-style:italic;font-size:19px;color:var(--warm)}
-.sig{font-family:var(--f-sig);font-size:26px;color:var(--accent2)}
-nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;padding:10px 0;margin-bottom:10px;border-bottom:1px solid var(--line);scrollbar-width:none}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-nav.tabs a{flex:none;display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;color:var(--soft);text-decoration:none;font-family:var(--f-sub);font-weight:600;font-size:17px;letter-spacing:.3px}
-nav.tabs a svg{width:18px;height:18px}
-nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--onaccent)}
-nav.tabs a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
-h2{font-family:var(--f-title);font-weight:500;font-size:24px;margin:22px 0 4px;color:var(--ink);text-wrap:balance}
-h3{font-family:var(--f-sub);font-weight:600;text-transform:uppercase;letter-spacing:2px;font-size:15px;color:var(--accent);margin:0 0 10px;display:flex;align-items:center;gap:8px}
-h3 svg{width:18px;height:18px}
-.lead{font-family:var(--f-sub);font-style:italic;font-size:18px;color:var(--soft);margin:0 0 14px}
-.grid{display:grid;gap:14px;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--f-body)}
+
+/* ícones de linha, com o detalhe em bege como no modelo */
+svg{stroke-width:1.6}
+nav.tabs svg>:last-child:not([fill]),h3 svg>:last-child:not([fill]),.ico svg>:last-child:not([fill]){stroke:var(--ic2)}
+.ico{flex:none;width:22px;height:22px;color:var(--accent);display:inline-grid}
+.ico svg{width:100%;height:100%}
+
+/* cabeçalho: faixa café com a marca e as abas */
+header.top{background:linear-gradient(135deg,#604335 0%,#7A5A48 60%,#8E705A 100%);color:#E3DBCA;border-bottom:3px solid #BCA186;
+  padding:calc(22px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px))}
+.topo{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:1200px;margin:0 auto}
+.marca{display:flex;align-items:center;gap:14px;min-width:0}
+.selo{flex:none;width:52px;height:52px;border-radius:50%;border:1.5px solid #BCA186;display:grid;place-items:center;color:#BCA186}
+.selo svg{width:28px;height:28px}.selo svg>:last-child{stroke:#E3DBCA}
+h1{font-family:var(--f-title);font-weight:400;font-size:34px;margin:0;letter-spacing:.02em;line-height:1.1}
+.sub{opacity:.8;font-size:13px;margin:2px 0 10px}
+header.top .sair{background:none;border:1px solid rgba(227,219,202,.5);color:#E3DBCA;border-radius:10px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;margin-bottom:12px}
+nav.tabs{display:flex;gap:2px;flex-wrap:wrap;max-width:1200px;margin:10px auto 0}
+nav.tabs a{display:inline-flex;align-items:center;gap:7px;color:#E3DBCA;opacity:.8;padding:10px 11px;font-size:13.5px;text-decoration:none;border-radius:10px 10px 0 0;white-space:nowrap}
+nav.tabs a:hover{opacity:1}
+nav.tabs a svg{width:1.2em;height:1.2em;flex:none}
+nav.tabs a svg>:last-child:not([fill]){stroke:#BCA186}
+nav.tabs a[aria-current="page"]{background:var(--bg);color:var(--accent);opacity:1;font-weight:600}
+nav.tabs a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--warm);outline-offset:2px}
+@media (max-width:860px){
+  nav.tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:calc(-1 * max(20px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(20px,env(safe-area-inset-right,0px)));padding:0 max(12px,env(safe-area-inset-left,0px))}
+  nav.tabs::-webkit-scrollbar{display:none}
+  nav.tabs a{flex:none}
+}
+
+/* área principal */
+.wrap{max-width:1232px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) calc(60px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+h2{font-family:var(--f-title);font-weight:400;color:var(--accent);font-size:28px;margin:4px 0 6px;line-height:1.15;text-wrap:balance}
+h3{font-size:13.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin:0 0 10px;font-weight:600;display:flex;align-items:center;gap:6px}
+h3 svg{width:17px;height:17px;flex:none}
+.lead{font-size:14px;color:var(--soft);margin:0 0 16px}
+.spread>p.lead{font-family:var(--f-title);font-size:23px;color:var(--accent);line-height:1.1}
+.spread>p.lead::first-letter{text-transform:uppercase}
+.grid{display:grid;gap:16px;align-items:start;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
 .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .spread{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 ul.items{list-style:none;margin:0;padding:0}
-ul.items li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+ul.items li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
 ul.items li:first-child{border-top:0}
 .grow{flex:1;min-width:0}
-.muted{color:var(--soft);font-size:13.5px}
+.muted{color:var(--soft);font-size:13px}
 .num{font-variant-numeric:tabular-nums}
-.pill{display:inline-block;font-size:12px;padding:1px 9px;border-radius:999px;background:var(--chip);color:var(--soft);white-space:nowrap}
-.pill.bad{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
-.pill.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
-.pill.ok{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.empty{color:var(--soft);font-style:italic;font-size:14px;padding:8px 0}
+
+/* números em destaque, em blocos como no resumo do mês */
+.stats{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr))}
+.card>.spread:first-child{margin-bottom:10px}.card>.spread:first-child>h3{margin:0}
+.stats>div{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0}
+.stats>div>.muted:first-child{display:block;text-transform:uppercase;letter-spacing:.08em;font-size:11.5px}
+.stat{font-size:22px;font-weight:500;margin-top:4px;color:var(--ink);font-variant-numeric:tabular-nums}
+.card:has(>.stats:only-child){background:none;border:0;padding:0}
+.card:has(>.stats:only-child) .stats{grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px}
+.card:has(>.stats:only-child) .stats>div{background:var(--surface);padding:14px 16px}
+.card:has(>.stats:only-child) .stat{font-size:24px}
+.card:has(>.stats:only-child) .stats>div:first-child{background:var(--accent);border-color:var(--accent);color:var(--onaccent)}
+.card:has(>.stats:only-child) .stats>div:first-child .muted{color:var(--warm)}
+.card:has(>.stats:only-child) .stats>div:first-child .stat{color:var(--onaccent)}
+
+/* selos e barras */
+.pill{display:inline-block;font-size:11.5px;padding:2px 9px;border-radius:20px;background:var(--chip);color:var(--accent);white-space:nowrap}
+.pill.bad{background:color-mix(in srgb,var(--bad) 15%,transparent);color:var(--bad);font-weight:600}
+.pill.warn{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.pill.ok{background:color-mix(in srgb,var(--ok) 17%,transparent);color:var(--ok)}
+.bar{height:8px;border-radius:8px;background:var(--chip);overflow:hidden;position:relative;margin-top:4px}
+.bar>i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--warm),var(--accent));border-radius:8px}
+.bar>b{position:absolute;top:0;bottom:0;width:2px;background:var(--ink);opacity:.45}
+.bar.over>i{background:var(--bad)}
+
+/* botões */
 button{font:inherit;cursor:pointer}
-.btn{border:1px solid var(--accent);background:var(--accent);color:var(--onaccent);border-radius:999px;padding:6px 14px;font-family:var(--f-sub);font-weight:600;font-size:16px}
-.btn.ghost{background:transparent;color:var(--accent)}
-.icon-btn{border:0;background:transparent;color:var(--soft);padding:2px 6px;border-radius:6px;font-size:13px}
-.icon-btn:hover{color:var(--accent)}
+button:disabled{opacity:.5}
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:var(--onaccent);border:1px solid var(--accent);border-radius:10px;padding:9px 16px;font-weight:600;font-size:14px}
+.btn.ghost{background:var(--surface);color:var(--accent);border:1px solid var(--accent)}
+.icon-btn{background:none;border:0;color:var(--accent);padding:4px 6px;font-size:13px;text-decoration:underline;text-underline-offset:2px}
 .icon-btn.danger{color:var(--bad)}
-.check{flex:none;width:20px;height:20px;border:1.5px solid var(--warm);border-radius:5px;background:transparent;display:grid;place-items:center;padding:0;color:var(--onaccent);margin-top:1px}
+.check{flex:none;width:20px;height:20px;border:1.5px solid var(--warm);border-radius:5px;background:var(--surface);display:grid;place-items:center;padding:0;color:var(--onaccent);margin-top:1px}
 .check.on{background:var(--accent);border-color:var(--accent)}
 .check.on::after{content:"";width:9px;height:5px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg) translate(1px,-1px)}
 .done{text-decoration:line-through;color:var(--soft)}
-.ico{flex:none;width:22px;height:22px;color:var(--accent2)}
-.bar{height:8px;border-radius:99px;background:var(--chip);overflow:hidden;position:relative}
-.bar>i{position:absolute;inset:0 auto 0 0;background:var(--accent2);border-radius:99px}
-.bar>b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.5}
-.bar.over>i{background:var(--bad)}
-.stat{font-family:var(--f-title);font-size:26px;color:var(--ink)}
-.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
-.empty{color:var(--soft);font-style:italic;font-size:14px;padding:6px 0}
+
+/* hábitos e tabelas */
 .hgrid{overflow-x:auto}
 .hgrid table{border-collapse:collapse;font-size:12px}
 .hgrid th,.hgrid td{padding:2px;text-align:center}
-.hgrid th.n{text-align:left;padding-right:10px;font-weight:500;white-space:nowrap;font-size:13.5px}
-.hgrid td button{width:20px;height:20px;border-radius:4px;border:1px solid var(--line);background:transparent;padding:0}
-.hgrid td button.on{background:var(--accent2);border-color:var(--accent2)}
-.hgrid td.today button{border-color:var(--accent)}
+.hgrid th{color:var(--soft);font-weight:500}
+.hgrid th.n{text-align:left;padding-right:10px;font-weight:500;white-space:nowrap;font-size:13.5px;color:var(--ink)}
+.hgrid td button{width:20px;height:20px;border-radius:5px;border:1px solid var(--line);background:var(--surface);padding:0}
+.hgrid td button.on{background:var(--accent);border-color:var(--accent)}
+.hgrid td.today button{border-color:var(--accent);border-width:1.5px}
+table.jt{border-collapse:collapse;width:100%;font-size:14px}
+table.jt th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--soft);border-bottom:1px solid var(--line);padding:8px 6px;font-weight:600;white-space:nowrap}
+table.jt td{border-bottom:1px solid var(--line);padding:9px 6px;white-space:nowrap}
+.hgrid table.jt th,.hgrid table.jt td{text-align:left}
+.hgrid table.jt td button{width:auto;height:auto;border:0;padding:2px 6px;background:none}
+
+/* agenda */
 .cal-h,.cal-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
-.cal-h span{text-align:center;font-family:var(--f-sub);font-weight:600;color:var(--soft);font-size:14px;text-transform:uppercase;letter-spacing:1px}
-.cd{min-height:84px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);padding:4px;display:flex;flex-direction:column;gap:2px;text-align:left;min-width:0;overflow:hidden}
-.cd.out{border:0}
+.cal-h span{text-align:center;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;color:var(--soft);padding-bottom:4px}
+.cd{min-height:84px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);padding:4px;display:flex;flex-direction:column;gap:2px;text-align:left;min-width:0;overflow:hidden}
+.cd.out{border:0;background:none}
 .cd .dn{font-size:13px;color:var(--soft)}
 .cd.hoje .dn{color:var(--onaccent);background:var(--accent);border-radius:99px;padding:0 6px;align-self:flex-start}
 .cd.sel{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 .ev{display:block;font-size:11px;line-height:1.3;padding:1px 4px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ev.ag{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
-.ev.conta{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
-.ev.cuid{background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok)}
+.ev.ag{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+.ev.conta{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
+.ev.aula{background:color-mix(in srgb,var(--warm) 30%,transparent);color:var(--ink)}
+.ev.cuid{background:color-mix(in srgb,var(--ok) 17%,transparent);color:var(--ok)}
 .more{font-size:11px;color:var(--soft)}
-@media (max-width:560px){.cd{min-height:52px;align-items:center}.cd .ev{width:7px;height:7px;padding:0;border-radius:99px;font-size:0;display:inline-block}.cd{flex-direction:row;flex-wrap:wrap;align-content:flex-start;justify-content:center}.cd .dn{width:100%;text-align:center}.cd.hoje .dn{width:auto}.more{font-size:10px}.cd .ev.ag{background:var(--accent)}.cd .ev.conta{background:var(--warn)}.cd .ev.cuid{background:var(--ok)}}
+@media (max-width:560px){.cd{min-height:52px;align-items:center}.cd .ev{width:7px;height:7px;padding:0;border-radius:99px;font-size:0;display:inline-block}.cd{flex-direction:row;flex-wrap:wrap;align-content:flex-start;justify-content:center}.cd .dn{width:100%;text-align:center}.cd.hoje .dn{width:auto}.more{font-size:10px}.cd .ev.ag{background:var(--accent)}.cd .ev.conta{background:var(--warn)}.cd .ev.cuid{background:var(--ok)}.cd .ev.aula{background:var(--warm)}}
 
-/* visual moderno */
-body{font-size:15px;letter-spacing:-.005em}
-h1{font-weight:800;letter-spacing:-.03em;font-size:clamp(26px,4.5vw,36px)}
-.date{font-style:normal;font-size:15px;font-weight:500;color:var(--soft)}
-.sig{display:none}
-header.top{border-bottom:0;padding-bottom:6px}
-nav.tabs{border-bottom:0;gap:6px}
-nav.tabs a{font-size:14px;font-weight:600;letter-spacing:0;padding:8px 14px;background:var(--surface);box-shadow:var(--shadow)}
-nav.tabs a[aria-current="page"]{box-shadow:none}
-h2{font-weight:800;letter-spacing:-.02em;font-size:24px}
-h3{text-transform:none;letter-spacing:-.01em;font-size:15px;font-weight:700;color:var(--ink)}
-h3 svg{color:var(--accent2)}
-.lead{font-style:normal;font-size:14.5px}
-.card{border:0;border-radius:20px;box-shadow:var(--shadow);padding:18px 20px}
-.btn{font-size:14px;font-weight:600;padding:8px 16px}
-.btn.ghost{background:var(--chip);border-color:transparent;color:var(--ink)}
-.stat{font-weight:800;letter-spacing:-.02em;font-size:28px}
-.petname{font-weight:800;letter-spacing:-.02em}
-.modal{border:0;border-radius:22px}
-.modal h4{font-weight:800;letter-spacing:-.02em;color:var(--ink)}
-.fld label{font-size:13px;font-weight:600}
-input,select,textarea{border-radius:12px;background:var(--chip);border-color:transparent}
-.check{border-radius:7px}
-.bar{height:10px}
-.cd{border-radius:12px}
-.cal-h span{text-transform:none;letter-spacing:0;font-size:12px}
-ul.items li{border-top-color:color-mix(in srgb,var(--line) 70%,transparent)}
-
-/* menu lateral */
-nav.tabs{position:fixed;top:0;bottom:0;left:0;width:248px;z-index:15;flex-direction:column;gap:4px;overflow-y:auto;overflow-x:hidden;margin:0;
-  padding:calc(24px + env(safe-area-inset-top,0px)) 14px calc(24px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));background:var(--surface);box-shadow:var(--shadow)}
-nav.tabs::before{content:"Casa da Carol";font-family:var(--f-title);font-weight:800;font-size:19px;letter-spacing:-.02em;color:var(--accent);padding:0 12px 18px}
-nav.tabs a{width:100%;background:transparent;box-shadow:none;padding:10px 12px;border-radius:12px;font-size:14.5px;color:var(--soft)}
-nav.tabs a:hover{background:var(--chip);color:var(--ink)}
-nav.tabs a[aria-current="page"]{background:var(--accent);color:var(--onaccent)}
-nav.tabs a svg{width:20px;height:20px}
-.menu-btn{display:none}
-@media (min-width:861px){.wrap{max-width:none;margin:0;padding-left:calc(248px + max(32px,env(safe-area-inset-left,0px)));padding-right:max(32px,env(safe-area-inset-right,0px))}.wrap>header,.wrap>main{max-width:1080px}}
-@media (max-width:860px){
-  nav.tabs{transform:translateX(-105%);transition:transform .25s ease}
-  body.menu-open nav.tabs{transform:none}
-  .menu-btn{display:grid;gap:4px;place-content:center;width:42px;height:42px;border:0;border-radius:12px;background:var(--surface);box-shadow:var(--shadow);flex:none;align-self:center}
-  .menu-btn span{display:block;width:18px;height:2px;border-radius:2px;background:var(--ink)}
-  header.top{flex-wrap:nowrap;align-items:center}
-  .scrim{position:fixed;inset:0;z-index:14;background:color-mix(in srgb,#000 35%,transparent)}
-}
-@media (prefers-reduced-motion:reduce){nav.tabs{transition:none}}
+/* funcionárias e skincare */
 .ponto{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .pt{display:grid;gap:4px}.pt .btn{justify-self:start}
-table.jt{border-collapse:collapse;width:100%;font-size:14px}
-table.jt th{text-align:left;font-weight:600;color:var(--soft);font-size:12.5px;padding:6px 8px;white-space:nowrap}
-table.jt td{padding:7px 8px;border-top:1px solid var(--line);white-space:nowrap}
-.hgrid table.jt th,.hgrid table.jt td{text-align:left}
-.hgrid table.jt td button{width:auto;height:auto;border:0;padding:2px 6px}
-.card.alerta{background:color-mix(in srgb,var(--warn) 10%,var(--surface));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--warn) 45%,transparent)}
+.card.alerta{background:var(--aviso);border-color:var(--warm)}
 .card.alerta h3{color:var(--warn)}
 .semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.semana .dia{display:grid;gap:2px;padding:10px 8px;border-radius:12px;background:var(--chip);font-size:13px;min-width:0}
+.semana .dia{display:grid;gap:2px;padding:10px 8px;border-radius:12px;background:var(--bg);border:1px solid var(--line);font-size:13px;min-width:0}
 .semana .dia b{font-weight:600;overflow-wrap:anywhere}
-.semana .dia.hoje{background:var(--accent);color:var(--onaccent)}.semana .dia.hoje .muted{color:inherit;opacity:.8}
+.semana button.dia{font:inherit;color:inherit;text-align:left;cursor:pointer}.semana button.dia:active{transform:scale(.97)}
+.semana .dia.hoje{background:var(--accent);border-color:var(--accent);color:var(--onaccent)}.semana .dia.hoje .muted{color:inherit;opacity:.8}
 @media (max-width:560px){.semana{grid-template-columns:repeat(2,minmax(0,1fr))}}
-/* modal */
-.ov{position:fixed;inset:0;background:color-mix(in srgb,#000 45%,transparent);z-index:20;display:grid;place-items:center;padding:16px}
-.modal{background:var(--surface);border-radius:14px;max-width:460px;width:100%;max-height:90vh;overflow:auto;padding:20px;border:1px solid var(--line)}
-.modal h4{font-family:var(--f-title);font-weight:500;font-size:22px;margin:0 0 12px;color:var(--accent)}
+.pets{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.petname{font-family:var(--f-title);font-size:32px;color:var(--accent);line-height:1.1}
+.chart>svg{width:100%;height:auto;display:block}
+
+/* formulários */
+.ov{position:fixed;inset:0;background:color-mix(in srgb,#2A1D16 50%,transparent);z-index:20;display:grid;place-items:center;padding:16px}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:14px;max-width:460px;width:100%;max-height:90vh;overflow:auto;padding:20px}
+.modal h4{font-family:var(--f-title);font-weight:400;font-size:26px;margin:0 0 12px;color:var(--accent);line-height:1.15}
 .fld{display:grid;gap:3px;margin-bottom:10px}
-.fld label{font-family:var(--f-sub);font-weight:600;font-size:15px;color:var(--soft)}
-input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px;width:100%;min-width:0}
+.fld label{font-size:12px;color:var(--soft)}
+input,select,textarea{width:100%;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:9px;font:inherit;background:var(--surface);color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--warm);border-color:var(--warm)}
 .quick{display:flex;gap:8px;margin-top:10px}
 .quick input{flex:1}
+.status{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:#3A2A21;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;z-index:30;box-shadow:0 6px 20px rgba(58,42,33,.25)}
+@media (max-width:640px){h1{font-size:28px}.spread>p.lead{font-size:21px}}
+/* uso no dia a dia: botão +, folhas de atalho e barra inferior no celular */
+.bnav{display:none}
+.fab{position:fixed;right:max(20px,env(safe-area-inset-right,0px));bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:16;width:58px;height:58px;border-radius:50%;border:0;background:var(--accent);color:var(--onaccent);display:grid;place-items:center;box-shadow:0 8px 24px rgba(58,42,33,.32)}
+.fab svg{width:26px;height:26px;stroke-width:2.2}
+.fab:active{transform:scale(.95)}
+.qa{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.qa>a,.qa>button{display:flex;align-items:center;gap:10px;min-height:54px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);text-align:left;font-weight:500;font-size:14.5px;text-decoration:none}
+.qa>[aria-current]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.qa .ico svg>:last-child:not([fill]){stroke:var(--ic2)}
+.sheet-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.sheet-h h4{margin:0}
+a.lk{color:inherit;text-decoration:none;display:flex;align-items:center;gap:10px}
+a.lk::after{content:"›";color:var(--soft);font-size:18px;line-height:1}
+.mais-link{display:inline-block;margin-top:10px;color:var(--accent);font-size:13px}
+.card.atencao{border-color:var(--warm);box-shadow:inset 3px 0 0 var(--accent)}
+@media (min-width:861px){.fab{right:max(28px,calc((100vw - 1232px)/2 - 70px))}}
+@media (max-width:860px){
+  nav.tabs{display:none}
+  header.top{padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:12px}
+  .selo{width:40px;height:40px}.selo svg{width:22px;height:22px}
+  h1{font-size:25px}.sub{margin:0;font-size:12.5px}
+  .bnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--surface);border-top:1px solid var(--line);
+    padding:6px max(4px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(4px,env(safe-area-inset-left,0px));box-shadow:0 -4px 18px rgba(58,42,33,.08)}
+  .bnav a,.bnav button{display:grid;justify-items:center;gap:2px;font:inherit;font-size:11px;color:var(--soft);text-decoration:none;background:none;border:0;padding:4px 0;min-width:0}
+  .bnav svg{width:24px;height:24px}
+  .bnav svg>:last-child:not([fill]){stroke:var(--ic2)}
+  .bnav [aria-current]{color:var(--accent);font-weight:600}
+  .wrap{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
+  .fab{bottom:calc(80px + env(safe-area-inset-bottom,0px));right:max(16px,env(safe-area-inset-right,0px))}
+  .ov{place-items:end center;padding:0}
+  .modal{border-radius:20px 20px 0 0;max-width:none;max-height:88vh;padding:18px 18px calc(22px + env(safe-area-inset-bottom,0px));border-bottom:0}
+  .modal .btn{padding:11px 12px;justify-content:center}
+  #mf>.spread>.row{flex:1;flex-wrap:nowrap;justify-content:flex-end}#mf>.spread>.row .btn{flex:1;white-space:nowrap;font-size:13.5px}
+  #mf>.spread>div:first-child:empty{display:none}
+}
+/* menu na barra lateral esquerda (pedido da Carol, 23/11) */
+@media (min-width:861px){
+  header.top{position:fixed;top:0;bottom:0;left:0;width:264px;z-index:15;display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin;
+    border-bottom:0;border-right:3px solid #BCA186;background:linear-gradient(170deg,#604335 0%,#7A5A48 65%,#8E705A 100%);
+    padding:calc(26px + env(safe-area-inset-top,0px)) 14px calc(20px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px))}
+  .topo{flex-direction:column;align-items:flex-start;margin:0;padding:0 8px;gap:10px;max-width:none}
+  .marca{flex-direction:column;align-items:flex-start;gap:12px}
+  h1{font-size:32px}
+  .sub{margin:4px 0 0;line-height:1.4}
+  .sub>span{display:block}.sub{font-size:0}.sub>span{font-size:13px}
+  header.top .sair{margin:6px 0 0}
+  nav.tabs{flex-direction:column;flex-wrap:nowrap;gap:2px;margin:22px 0 0;padding-top:18px;border-top:1px solid rgba(188,161,134,.35);max-width:none}
+  nav.tabs a{border-radius:10px;padding:10px 12px;font-size:14px;width:100%}
+  nav.tabs a:hover{background:rgba(227,219,202,.1)}
+  nav.tabs a[aria-current="page"]{background:var(--bg);color:var(--accent)}
+  nav.tabs a svg{width:20px;height:20px}
+  .wrap{max-width:none;margin:0;padding-left:calc(264px + 40px);padding-right:max(40px,env(safe-area-inset-right,0px));padding-top:28px}
+  .wrap>*{max-width:1180px}
+  .fab{right:max(32px,env(safe-area-inset-right,0px))}
+}
+/* no celular, "Mais" abre o menu como barra lateral esquerda */
+@media (max-width:860px){
+  .ov.lado{place-items:stretch start;padding:0}
+  .ov.lado .modal{height:100%;max-height:none;width:min(300px,84vw);border-radius:0 18px 18px 0;border:0;border-right:3px solid #BCA186;
+    background:linear-gradient(170deg,#604335 0%,#7A5A48 65%,#8E705A 100%);color:#E3DBCA;padding:calc(22px + env(safe-area-inset-top,0px)) 12px calc(20px + env(safe-area-inset-bottom,0px));animation:entra .22s ease}
+  .ov.lado .modal h4{color:#E3DBCA;padding-left:8px}
+  .ov.lado .icon-btn{color:#E3DBCA}
+  .ov.lado .qa{grid-template-columns:1fr;gap:2px}
+  .ov.lado .qa>a{background:none;border:0;color:#E3DBCA;min-height:46px;padding:10px 12px;border-radius:10px;font-size:15px}
+  .ov.lado .qa>a .ico{color:#E3DBCA}
+  .ov.lado .qa>a[aria-current]{background:var(--bg);color:var(--accent);box-shadow:none;font-weight:600}
+  .ov.lado .qa>a[aria-current] .ico{color:var(--accent)}
+}
+nav.tabs .grp,.qa>.grp{grid-column:1/-1;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#BCA186;padding:16px 12px 4px}
+.qa>.grp{color:var(--soft);padding:8px 2px 0}
+.ov.lado .qa>.grp{color:#BCA186;padding:16px 12px 4px}
+ul.items li{flex-wrap:wrap}ul.items li>.grow{min-width:min(90px,100%)}
+.gref{font-family:var(--f-title);font-size:22px;color:var(--accent);line-height:1.15;margin:4px 0 8px}
+.gtema{font-family:var(--f-title);font-size:28px;color:var(--ink);line-height:1.1}
+.gesp .gref{font-family:var(--f-body,inherit);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin:4px 0 0}
+.gora{margin:12px 0 0;padding:10px 14px;border-left:2px solid var(--warm);font-style:italic;color:var(--accent)}
+.gnota{margin-top:10px;padding:10px 12px;background:var(--chip);border-radius:10px;white-space:pre-wrap;font-size:13.5px}
+.gk{margin:12px 0 2px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+.gchecks{display:flex;flex-wrap:wrap;gap:8px 16px}.gchecks label{display:flex;align-items:center;gap:7px;font-size:13.5px}
+.gdots{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;max-width:320px;margin-top:12px}
+.gdot{aspect-ratio:1;border-radius:6px;border:1px solid var(--line);background:var(--surface)}
+.gdot.meio{background:var(--chip);border-color:var(--warm)}.gdot.on{background:var(--accent);border-color:var(--accent)}.gdot.hoje{outline:1.5px solid var(--warm);outline-offset:2px}
+.copo{width:26px;height:32px;border:1.5px solid var(--warm);border-radius:4px 4px 8px 8px;background:var(--surface);padding:0;position:relative;overflow:hidden}
+.copo.on{background:linear-gradient(to top,color-mix(in srgb,var(--accent) 55%,var(--warm)) 75%,var(--surface) 75%);border-color:var(--accent)}
+@keyframes entra{from{transform:translateX(-100%)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.ov.lado .modal{animation:none}}
+[hidden]{display:none!important}
+img{max-width:100%}
 .login{min-height:100vh;display:grid;place-items:center;padding:16px}
-.status{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:14px;z-index:30}
-.chart>svg{width:100%;height:auto;display:block}
-.pets{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
-.petname{font-family:var(--f-title);font-size:26px;color:var(--accent)}
-@media (prefers-reduced-motion:no-preference){.card{transition:border-color .2s}}
 </style>
-
 </head>
 <body>
-<div class="login" id="login" hidden><form class="modal" id="lf"><h4>Casa da Carol</h4><p class="muted" style="margin-top:-6px">Entre com seu e-mail e senha.</p><div class="fld"><label for="l-e">E-mail</label><input id="l-e" type="email" autocomplete="username" required></div><div class="fld"><label for="l-s">Senha</label><input id="l-s" type="password" autocomplete="current-password" required></div><p class="muted" id="l-msg" role="alert"></p><button class="btn">Entrar</button></form></div>
-<div class="wrap" id="app" hidden>
-  <header class="top">
-    <button class="menu-btn" id="menu-btn" aria-label="Abrir menu" aria-controls="tabs" aria-expanded="false"><span></span><span></span><span></span></button>
-    <div class="grow"><h1 id="hello">Bom dia, Carol</h1><div class="date" id="today"></div></div>
-    <div class="row"><div class="sig">Casa da Carol</div><button class="icon-btn" id="sair">sair</button></div>
-  </header>
+<div class="login" id="login" hidden><form class="modal" id="lf"><h4>Meu Painel</h4><p class="muted" style="margin-top:-6px">Entre com seu e-mail e senha.</p><div class="fld"><label for="l-e">E-mail</label><input id="l-e" type="email" autocomplete="username" required></div><div class="fld"><label for="l-s">Senha</label><input id="l-s" type="password" autocomplete="current-password" required></div><p class="muted" id="l-msg" role="alert"></p><button class="btn">Entrar</button></form></div>
+<div id="app" hidden>
+<header class="top">
+  <div class="topo">
+    <div class="marca"><div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><path d="M17 13.5v7M13.5 17h7"/></svg></div><div><h1>Meu Painel</h1><div class="sub"><span id="hello">Bom dia, Carol</span> · <span id="today"></span></div></div></div><button class="sair" id="sair">Sair</button>
+  </div>
   <nav class="tabs" id="tabs" aria-label="Seções"></nav>
-  <div class="scrim" id="scrim" hidden></div>
-  <main id="view"><p class="empty">Carregando seus dados…</p></main>
+</header>
+<main class="wrap" id="view"><p class="empty">Carregando seus dados…</p></main>
+<nav class="bnav" id="bnav" aria-label="Atalhos"></nav>
+<button class="fab" id="fab" data-act="quick" aria-label="Adicionar algo" title="Adicionar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
 </div>
 <div id="modal-root"></div>
 <div id="status" class="status" hidden></div>
@@ -210,7 +297,7 @@ const when=s=>{const n=daysTo(s);if(n===0)return['hoje','warn'];if(n===1)return[
 const pillWhen=s=>{if(!s)return'';const[t,c]=when(s);return`<span class="pill ${c}">${esc(t)}</span>`};
 
 /* ---------- dados ---------- */
-const COLS=['skin','ponto','visitas','parcelas','cartoes','fixas','feira','habitos','marcas','compromissos','metas','lancamentos','contas','poupanca','casa','marina','pets','config'];
+const COLS=['ingles','terapia','guia','dieta','skin','ponto','visitas','parcelas','cartoes','fixas','feira','habitos','marcas','compromissos','metas','lancamentos','contas','poupanca','casa','marina','pets','config'];
 const S={};COLS.forEach(c=>S[c]=[]);
 let db=null,ready=false;
 const cfg=id=>(S.config.find(d=>d.id===id)||{});
@@ -225,6 +312,8 @@ const CATS_FIN=['Cartão de crédito','Funcionárias','Casa','Alimentação','Ma
 const ICON_LIST=Object.keys(ICONS);
 const FEIRA_CATS=['Hortifrúti','Açougue e peixaria','Frios e laticínios','Mercearia','Padaria','Bebidas','Limpeza','Higiene','Marina','Kiara e Diana','Outros'];
 const FORMS={
+  ingles:{t:'Aula de inglês',f:[{k:'data',l:'Dia',type:'date',req:1,def:TODAY},{k:'hora',l:'Horário',type:'time',def:()=>rot('ingles').hora},{k:'assunto',l:'Assunto da aula',req:1},{k:'status',l:'Situação',type:'select',o:['Feita','Faltei','Remarcada','Professora cancelou'],def:()=>'Feita'},{k:'nota',l:'Anotações (vocabulário, dever de casa, dúvidas)',type:'textarea'}]},
+  terapia:{t:'Sessão de terapia',f:[{k:'data',l:'Dia',type:'date',req:1,def:TODAY},{k:'hora',l:'Horário',type:'time',def:()=>rot('terapia').hora},{k:'status',l:'Situação',type:'select',o:['Feita','Faltei','Remarcada','Terapeuta desmarcou'],def:()=>'Feita'},{k:'assunto',l:'O que conversamos',type:'textarea'},{k:'levar',l:'Para levar à próxima sessão',type:'textarea'}]},
   habitos:{t:'Hábito',f:[{k:'nome',l:'Nome',req:1},{k:'icone',l:'Ícone',type:'select',o:ICON_LIST}]},
   compromissos:{t:'Compromisso',f:[{k:'titulo',l:'O quê',req:1},{k:'data',l:'Dia',type:'date',req:1,def:TODAY},{k:'hora',l:'Horário',type:'time'},{k:'icone',l:'Categoria',type:'select',o:ICON_LIST,def:()=>'agenda'},{k:'nota',l:'Observação',type:'textarea'}]},
   metas:{t:'Meta do semestre',f:[{k:'titulo',l:'Meta',req:1},{k:'area',l:'Área',type:'select',o:ICON_LIST,def:()=>'metas'},{k:'porque',l:'Por que importa',type:'textarea'},{k:'marcosTxt',l:'Etapas (uma por linha)',type:'textarea'}]},
@@ -254,7 +343,7 @@ function openForm(col,doc,preset={}){
     return`<div class="fld" ${f.only?`data-only="${f.only}"`:''}><label for="${id}">${esc(f.l)}</label>${input}</div>`}).join('');
   $('#modal-root').innerHTML=`<div class="ov" id="ov"><form class="modal" id="mf"><h4>${doc?'Editar':'Novo'}: ${esc(F.t)}</h4>${fields}
    <div class="spread"><div>${doc?`<button type="button" class="icon-btn danger" id="mdel">Apagar</button>`:''}</div>
-   <div class="row"><button type="button" class="btn ghost" id="mcancel">Cancelar</button><button class="btn">Salvar</button></div></div></form></div>`;
+   <div class="row"><button type="button" class="btn ghost" id="mcancel">Cancelar</button>${!doc&&['feira','casa'].includes(col)?'<button class="btn ghost" id="mmais">Salvar e outro</button>':''}<button class="btn">Salvar</button></div></div></form></div>`;
   const sync=()=>{const t=$('#f-tipo');document.querySelectorAll('[data-only]').forEach(el=>el.hidden=!t||t.value!==el.dataset.only)};
   $('#f-tipo')?.addEventListener('change',sync);sync();
   const close=()=>$('#modal-root').innerHTML='';
@@ -271,10 +360,12 @@ function openForm(col,doc,preset={}){
     if(col==='contas')out.pago=doc?.pago||false;
     if(col==='habitos')out.ordem=doc?.ordem??S.habitos.length;
     if(!doc)out.criadoEm=Date.now();
-    const {id,...rest}=doc||{};close();await save(col,doc?doc.id:null,doc?Object.assign({},rest,out):out);flash('Salvo')};
+    const again=e.submitter&&e.submitter.id==='mmais';const {id,...rest}=doc||{};close();await save(col,doc?doc.id:null,doc?Object.assign({},rest,out):out);flash('Salvo');
+    if(again)openForm(col,null,col==='feira'?{categoria:out.categoria}:{lista:out.lista})};
   $('#mf input,#mf select')?.focus();
 }
 document.addEventListener('click',e=>{
+  if(e.target.id==='ov-noite'||e.target.id==='ov-sheet'){$('#modal-root').innerHTML='';return}
   const b=e.target.closest('[data-act]');if(!b)return;const{act,col,id,extra}=b.dataset;
   const doc=id?S[col]?.find(d=>d.id===id):null;
   if(act==='new')openForm(col,null,extra?JSON.parse(extra):{});
@@ -293,6 +384,8 @@ document.addEventListener('click',e=>{
   if(act==='fixa'&&doc){payFixa(doc,extra)}
   if(act==='fatura'&&doc){editFatura(doc,extra)}
   if(act==='fatpaga'&&doc){payFatura(doc,extra)}
+  if(act==='noite'){noiteModal(+extra)}
+  if(act==='noite-x'){$('#modal-root').innerHTML=''}
   if(act==='skin'){const d=S.skin.find(x=>x.id===extra)||{};const{id:_,...r}=d;save('skin',extra,{...r,[id]:!d[id]})}
   if(act==='ponto'){marcaPonto(id,extra)}
   if(act==='pontoedit'){editPonto(extra)}
@@ -300,6 +393,20 @@ document.addEventListener('click',e=>{
   if(act==='fmonth'){funcMonth=extra;render()}
   if(act==='funcaj'){editFuncCfg()}
   if(act==='sil-lancar'){const vs=S.visitas.filter(v=>(v.data||'').startsWith(funcMonth));const t=vs.reduce((a,v)=>a+(+v.valor||0),0);const[y,m]=funcMonth.split('-');openForm('lancamentos',null,{tipo:'despesa',descricao:`Silvanei · ${MES[+m-1]} (${vs.length} idas)`,valor:t||'',categoria:'Funcionárias'})}
+  if(act==='refeicao'){const fe=new Set(dDoc(extra).feitas||[]);fe.has(id)?fe.delete(id):fe.add(id);dSave(extra,{feitas:[...fe]})}
+  if(act==='agua'){const n=dDoc(extra).agua||0;dSave(extra,{agua:+id===n?n-1:+id})}
+  if(act==='treino'){dSave(extra,{treino:!dDoc(extra).treino})}
+  if(act==='diastase'){dSave(extra,{diastase:!dDoc(extra).diastase})}
+  if(act==='cardapio'){editCardapio(+extra)}
+  if(act==='dieta-feira'){const tem=new Set(S.feira.map(x=>String(x.nome).toLowerCase()));const novos=DT.feira.filter(([n])=>!tem.has(n.toLowerCase()));novos.forEach(([nome,qtd,categoria])=>save('feira',null,{nome,qtd,categoria,preco:null,comprado:false,criadoEm:Date.now(),dieta:true}));flash(novos.length?`${novos.length} itens colocados na feira`:'Tudo já estava na feira')}
+  if(act==='guia'){const fe=new Set(gDoc(extra).feitos||[]);fe.has(id)?fe.delete(id):fe.add(id);gSave(extra,{feitos:[...fe]})}
+  if(act==='guia-nav'){guiaOff=+id?guiaOff+(+id):0;render()}
+  if(act==='guia-nota'){guiaNota(extra)}
+  if(act==='guia-reset'){if(confirm('Recomeçar o guia do dia 1 a partir de hoje?')){save('config','guia',{inicio:TODAY()});guiaOff=0;flash('Guia recomeçado')}}
+  if(act==='rotina'){editRotina(id)}
+  if(act==='quick')quickSheet();
+  if(act==='mais')maisSheet();
+  if(act==='sheet-x'){$('#modal-root').innerHTML=''}
   if(act==='done-clear'){S.casa.filter(x=>x.feito&&x.lista===extra).forEach(x=>remove('casa',x.id))}
 });
 function toggleHabit(hid,day){const m=S.marcas.find(x=>x.id===day);const f=new Set((m&&m.feitos)||[]);f.has(hid)?f.delete(hid):f.add(hid);save('marcas',day,{feitos:[...f]})}
@@ -307,9 +414,18 @@ const addBtn=(col,label='Adicionar',extra)=>`<button class="btn ghost" data-act=
 const editBtn=(col,id)=>`<button class="icon-btn" data-act="edit" data-col="${col}" data-id="${id}" aria-label="Editar">editar</button>`;
 
 /* ---------- seções ---------- */
-const TABS=[['hoje','Hoje','notas'],['habitos','Hábitos','autocuidado'],['agenda','Agenda','agenda'],['metas','Metas','metas'],['financas','Finanças','financas'],['feira','Feira do mês','compras'],['casa','Casa','casa'],['funcionarias','Funcionárias','trabalho'],['skincare','Skincare','autocuidado'],['marina','Marina','familia'],['cachorras','Kiara e Diana','saude']];
+const TABS=[['hoje','Hoje','notas'],['guia','Guia do dia','estudos'],['habitos','Hábitos','autocuidado'],['agenda','Agenda','agenda'],['metas','Metas','metas'],['financas','Finanças','financas'],['feira','Feira do mês','compras'],['casa','Casa','casa'],['funcionarias','Funcionárias','trabalho'],['skincare','Skincare','autocuidado'],['dieta','Dieta','alimentacao'],['treino','Treino','lazer'],['terapia','Terapia','saude'],['ingles','Inglês','estudos'],['marina','Marina','familia'],['cachorras','Kiara e Diana','saude']];
+const GRUPOS=[['',['hoje','guia','agenda','financas','metas']],['Casa',['casa','feira']],['Saúde e cuidados',['dieta','treino','terapia','habitos','skincare']],['Estudos',['ingles']],['Marina e cachorras',['marina','cachorras']],['Funcionárias',['funcionarias']]];
+const tabOf=k=>TABS.find(t=>t[0]===k);
 const route=()=>{const h=location.hash.slice(1);return TABS.some(t=>t[0]===h)?h:'hoje'};
-function renderTabs(){const r=route();$('#tabs').innerHTML=TABS.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}${l}</a>`).join('')}
+function renderTabs(){const r=route();$('#tabs').innerHTML=GRUPOS.map(([g,ks])=>(g?`<div class="grp">${g}</div>`:'')+ks.map(k=>{const[,l,i]=tabOf(k);return`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}${l}</a>`}).join('')).join('');renderBnav(r)}
+const BN=[['hoje','Hoje','notas'],['agenda','Agenda','agenda'],['financas','Finanças','financas'],['feira','Feira','compras']];
+const MAIS_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>';
+function renderBnav(r){const el=$('#bnav');if(!el)return;el.innerHTML=BN.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}<span>${l}</span></a>`).join('')+`<button data-act="mais" ${BN.some(b=>b[0]===r)?'':'aria-current="page"'}>${MAIS_SVG}<span>${BN.some(b=>b[0]===r)?'Mais':esc(TABS.find(t=>t[0]===r)[1])}</span></button>`}
+function sheet(t,html,cls=''){$('#modal-root').innerHTML=`<div class="ov ${cls}" id="ov-sheet"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(t)}"><div class="sheet-h"><h4>${esc(t)}</h4><button class="icon-btn" data-act="sheet-x">Fechar</button></div>${html}</div></div>`}
+function maisSheet(){const r=route();sheet('Menu',`<div class="qa">${GRUPOS.map(([g,ks])=>(g?`<div class="grp">${g}</div>`:'')+ks.map(k=>{const[,l,i]=tabOf(k);return`<a href="#${k}" data-act="sheet-x" ${k===r?'aria-current="page"':''}>${ic(i)}${l}</a>`}).join('')).join('')}</div>`,'lado')}
+const QUICK=[['lancamentos','Gasto','financas',{tipo:'despesa'}],['lancamentos','Entrada','financas',{tipo:'receita'}],['compromissos','Compromisso','agenda'],['ingles','Aula de inglês','estudos',{data:'hoje'}],['terapia','Terapia','saude',{data:'hoje'}],['feira','Item da feira','compras'],['casa','Coisa da casa','casa'],['visitas','Ida da Sil','trabalho',{data:'hoje'}],['marina','Marina','familia'],['pets','Kiara e Diana','saude']];
+function quickSheet(){sheet('Adicionar',`<div class="qa">${QUICK.map(([c,l,i,x])=>`<button data-act="new" data-col="${c}" ${x?`data-extra='${esc(JSON.stringify(x.data==='hoje'?{...x,data:TODAY()}:x))}'`:''}>${ic(i)}${l}</button>`).join('')}</div>`)}
 
 function habitsToday(day=TODAY()){const m=S.marcas.find(x=>x.id===day);const f=new Set((m&&m.feitos)||[]);
   const hs=[...S.habitos].sort((a,b)=>(a.ordem??0)-(b.ordem??0));
@@ -341,16 +457,20 @@ function V_hoje(){const t=TODAY();const ag=S.compromissos.filter(c=>c.data===t).
   const amanha=S.compromissos.filter(c=>daysTo(c.data)===1).sort(sortAg);
   const metas=[...S.metas].sort((a,b)=>metaProg(a)-metaProg(b));const g=metas[0];
   const casa=['comprar','ajeitar','instalar'].map(l=>[l,S.casa.filter(x=>x.lista===l&&!x.feito).length]);casa.unshift(['a feira',S.feira.filter(x=>!x.comprado).length]);
-  const mes=t.slice(0,7);const fin=finSum(mes);
-  return`<p class="lead">Seu resumo do dia. Ele se atualiza sozinho sempre que você abre esta página.</p>
+  const mes=t.slice(0,7);const fin=finSum(mes);const lem=proximos();const atr=lem.filter(x=>daysTo(x.d)<=0);
+  return`<h2>Resumo do dia</h2><p class="lead">${atr.length?`${atr.length} ${atr.length===1?'coisa vence hoje ou está atrasada':'coisas vencem hoje ou estão atrasadas'}. Toque no + para anotar algo rápido.`:'Tudo em dia por aqui. Toque no + para anotar algo rápido.'}</p>
   <div class="grid">
+   <section class="card ${atr.length?'atencao':''}"><h3>${ICONS.tarefas} ${atr.length?'Precisa de atenção':'Lembretes'}</h3>${lembretes(lem)}</section>
+   <section class="card"><h3>${ICONS.estudos} Guia de hoje</h3>${guiaHoje()}</section>
+   <section class="card"><h3>${ICONS.estudos} Inglês e terapia</h3>${aulasHoje()}</section>
    <section class="card"><h3>${ICONS.agenda} Agenda de hoje</h3>${agendaList(ag,false)}${amanha.length?`<p class="muted" style="margin:10px 0 0">Amanhã: ${amanha.map(c=>esc((c.hora?c.hora+' ':'')+c.titulo)).join(' · ')}</p>`:''}<div class="quick">${addBtn('compromissos','Compromisso')}</div></section>
    <section class="card"><h3>${ICONS.autocuidado} Hábitos de hoje</h3>${habitsToday()}</section>
-   <section class="card"><h3>${ICONS.autocuidado} Skincare de hoje</h3>${skinHoje()}<p class="muted" style="margin:8px 0 0"><a href="#skincare" style="color:var(--accent)">Ver os passos</a></p></section>
-   <section class="card"><h3>${ICONS.tarefas} Lembretes</h3>${lembretes(proximos())}</section>
+   <section class="card"><h3>${ICONS.alimentacao} Dieta e treino de hoje</h3>${(()=>{const p=proxRef();if(!p)return'<p style="margin:0">Todas as refeições de hoje marcadas.</p>';const[k,t,l]=p;const tx=refTexto(k);return`<div class="row" style="flex-wrap:nowrap;align-items:flex-start"><button class="check" data-act="refeicao" data-id="${k}" data-extra="${TODAY()}" aria-label="${l} feito"></button><div class="grow"><span class="muted">Próxima refeição · ${t}</span><div><b style="font-weight:600">${l}</b>${tx?': '+esc(tx):''}</div></div></div>`})()}
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">${treinoHojeCard().replace(/<ul class="items">[\s\S]*<\/ul>/,'')}</div><a class="mais-link" href="#dieta">Abrir a Dieta</a></section>
+   <section class="card"><h3>${ICONS.autocuidado} Skincare de hoje</h3>${skinHoje()}<p class="muted" style="margin:8px 0 0"><button class="btn" data-act="noite" data-extra="${parse(TODAY()).getDay()}">Ver tratamento de hoje</button></p></section>
+   <section class="card"><h3>${ICONS.financas} Dinheiro no mês</h3><div class="stats"><div><div class="muted">Gasto até agora</div><div class="stat num">${brl(fin.desp)}</div></div><div><div class="muted">Sobra</div><div class="stat num">${brl(fin.rec-fin.desp)}</div></div></div><a class="mais-link" href="#financas">Abrir Finanças</a></section>
+   <section class="card"><h3>${ICONS.casa} Listas</h3><ul class="items">${casa.map(([l,n])=>`<li><a class="lk grow" href="#${l==='a feira'?'feira':'casa'}"><span class="grow">${l==='a feira'?'Falta na feira':'Para '+l}</span><span class="pill">${n} ${n===1?'item':'itens'}</span></a></li>`).join('')}</ul></section>
    <section class="card"><h3>${ICONS.metas} Meta em destaque</h3>${g?metaCard(g,true):'<p class="empty">Cadastre suas metas do semestre na aba Metas.</p>'}</section>
-   <section class="card"><h3>${ICONS.financas} Dinheiro no mês</h3><div class="stats"><div><div class="muted">Gasto até agora</div><div class="stat num">${brl(fin.desp)}</div></div><div><div class="muted">Sobra</div><div class="stat num">${brl(fin.rec-fin.desp)}</div></div></div></section>
-   <section class="card"><h3>${ICONS.casa} Casa</h3><ul class="items">${casa.map(([l,n])=>`<li><span class="grow">${l==='a feira'?'Falta na feira':'Para '+l}</span><span class="pill">${n} ${n===1?'item':'itens'}</span></li>`).join('')}</ul></section>
   </div>`}
 
 function V_habitos(){const now=new Date();const y=now.getFullYear(),m=now.getMonth();const nd=new Date(y,m+1,0).getDate();
@@ -372,18 +492,19 @@ function eventosDoDia(d){const ev=S.compromissos.filter(c=>c.data===d).sort(sort
   S.fixas.filter(f=>fixaVenc(f,d.slice(0,7))===d&&!f.pagos?.[d.slice(0,7)]).forEach(f=>ev.push({k:'conta',t:'Conta: '+f.nome}));
   S.cartoes.filter(c=>fixaVenc(c,d.slice(0,7))===d&&!((c.faturas||{})[d.slice(0,7)]||{}).pago).forEach(c=>ev.push({k:'conta',t:'Fatura: '+c.nome}));
   S.marina.filter(r=>r.proxima===d).forEach(r=>ev.push({k:'cuid',t:'Marina: '+r.titulo}));
-  S.pets.filter(r=>r.proxima===d).forEach(r=>ev.push({k:'cuid',t:r.pet+': '+r.titulo}));return ev}
+  S.pets.filter(r=>r.proxima===d).forEach(r=>ev.push({k:'cuid',t:r.pet+': '+r.titulo}));
+  ['ingles','terapia'].forEach(t=>{const reg=aulaNoDia(t,d);if(reg.length)reg.forEach(x=>ev.push({k:'aula',t:(x.hora?x.hora+' ':'')+AU[t].nome+(x.status&&x.status!=='Feita'?' ('+x.status.toLowerCase()+')':'')}));else if(marcadaNoDia(t,d)&&d>=TODAY())ev.push({k:'aula',t:(rot(t).hora?rot(t).hora+' ':'')+AU[t].nome})});return ev}
 function V_agenda(){const[y,m]=calMonth.split('-').map(Number);const first=new Date(y,m-1,1);const nd=new Date(y,m,0).getDate();const lead=first.getDay();
   const cells=[...Array(lead)].map(()=>'<div class="cd out"></div>').join('')+[...Array(nd)].map((_,i)=>{const d=`${calMonth}-${pad(i+1)}`;const ev=eventosDoDia(d);
     return`<button class="cd ${d===TODAY()?'hoje':''} ${d===calDay?'sel':''}" data-act="calday" data-extra="${d}" aria-label="${i+1} de ${MES[m-1]}, ${ev.length} itens"><span class="dn num">${i+1}</span>${ev.slice(0,3).map(e=>`<span class="ev ${e.k}">${esc(e.t)}</span>`).join('')}${ev.length>3?`<span class="more">+${ev.length-3}</span>`:''}</button>`}).join('');
   const dia=S.compromissos.filter(c=>c.data===calDay).sort(sortAg);const extras=eventosDoDia(calDay).filter(e=>e.k!=='ag');
   return`<h2>Agenda</h2><div class="spread"><p class="lead" style="margin:0">${MES[m-1]} de ${y}</p><div class="row"><button class="btn ghost" data-act="calmonth" data-extra="${shiftMonth(calMonth,-1)}" aria-label="Mês anterior">‹</button><button class="btn ghost" data-act="calmonth" data-extra="${TODAY().slice(0,7)}">Hoje</button><button class="btn ghost" data-act="calmonth" data-extra="${shiftMonth(calMonth,1)}" aria-label="Próximo mês">›</button></div></div>
   <section class="card cal" style="margin-top:12px"><div class="cal-h">${['dom','seg','ter','qua','qui','sex','sáb'].map(d=>`<span>${d}</span>`).join('')}</div><div class="cal-g">${cells}</div>
-   <div class="row muted" style="margin-top:10px;font-size:13px"><span class="ev ag" style="display:inline">compromisso</span><span class="ev conta" style="display:inline">conta</span><span class="ev cuid" style="display:inline">cuidado</span></div></section>
+   <div class="row muted" style="margin-top:10px;font-size:13px"><span class="ev ag" style="display:inline">compromisso</span><span class="ev conta" style="display:inline">conta</span><span class="ev cuid" style="display:inline">cuidado</span><span class="ev aula" style="display:inline">aula e terapia</span></div></section>
   <section class="card" style="margin-top:14px"><div class="spread"><h3>${ICONS.agenda} ${DIA[parse(calDay).getDay()]}, ${fmtDate(calDay)}</h3>${addBtn('compromissos','Compromisso',{data:calDay})}</div>${agendaList(dia,false)}
    ${extras.length?`<ul class="items">${extras.map(e=>`<li><span class="ev ${e.k}" style="display:inline">${esc(e.t)}</span></li>`).join('')}</ul>`:''}</section>`}
 function metaCard(g,compact){const p=metaProg(g);const[r,c]=ritmo(p);const ms=g.marcos||[];
-  return`<div class="row" style="align-items:flex-start">${ic(g.area||'metas')}<div class="grow"><div class="spread"><b style="font-family:var(--f-title);font-weight:500;font-size:18px">${esc(g.titulo)}</b>${editBtn('metas',g.id)}</div>
+  return`<div class="row" style="align-items:flex-start">${ic(g.area||'metas')}<div class="grow"><div class="spread"><b style="font-family:var(--f-title);font-weight:400;font-size:22px;color:var(--accent)">${esc(g.titulo)}</b>${editBtn('metas',g.id)}</div>
   ${g.porque&&!compact?`<div class="muted">${esc(g.porque)}</div>`:''}
   <div class="spread" style="margin:8px 0 4px"><span class="num muted">${ms.filter(m=>m.feito).length} de ${ms.length} etapas</span><span class="pill ${c}">${r}</span></div>
   <div class="bar"><i style="width:${p*100}%"></i><b style="left:${semFrac()*100}%" title="quanto do semestre já passou"></b></div>
@@ -403,7 +524,7 @@ function chart6(){const ms=[...Array(6)].map((_,i)=>shiftMonth(finMonth,i-5));co
   const W=600,H=200,L=10,B=30,T=14,bw=(W-L*2)/6;const y=v=>T+(H-T-B)*(1-v/max);
   return`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Receitas e despesas dos últimos 6 meses">
    <line x1="${L}" x2="${W-L}" y1="${H-B}" y2="${H-B}" stroke="var(--line)"/>
-   ${data.map((d,i)=>{const x=L+i*bw+bw*.18,w=bw*.3;return`<rect x="${x}" y="${y(d.rec)}" width="${w}" height="${H-B-y(d.rec)}" fill="var(--warm)" rx="3"><title>Receitas ${brl(d.rec)}</title></rect><rect x="${x+w+3}" y="${y(d.desp)}" width="${w}" height="${H-B-y(d.desp)}" fill="var(--accent)" rx="3"><title>Despesas ${brl(d.desp)}</title></rect><text x="${L+i*bw+bw/2}" y="${H-10}" text-anchor="middle" font-size="13" fill="var(--soft)" font-family="Plus Jakarta Sans,sans-serif">${MES[+d.m.slice(5)-1].slice(0,3)}</text>`}).join('')}
+   ${data.map((d,i)=>{const x=L+i*bw+bw*.18,w=bw*.3;return`<rect x="${x}" y="${y(d.rec)}" width="${w}" height="${H-B-y(d.rec)}" fill="var(--warm)" rx="3"><title>Receitas ${brl(d.rec)}</title></rect><rect x="${x+w+3}" y="${y(d.desp)}" width="${w}" height="${H-B-y(d.desp)}" fill="var(--accent)" rx="3"><title>Despesas ${brl(d.desp)}</title></rect><text x="${L+i*bw+bw/2}" y="${H-10}" text-anchor="middle" font-size="13" fill="var(--soft)" font-family="Poppins,sans-serif">${MES[+d.m.slice(5)-1].slice(0,3)}</text>`}).join('')}
   </svg><div class="row muted"><span><span class="pill" style="background:var(--warm);color:var(--onaccent)">receitas</span></span><span><span class="pill" style="background:var(--accent);color:var(--onaccent)">despesas</span></span></div>`}
 
 const fixaVenc=(f,mes)=>{const[y,m]=mes.split('-').map(Number);const nd=new Date(y,m,0).getDate();return`${mes}-${pad(Math.min(+f.dia||1,nd))}`};
@@ -564,23 +685,219 @@ function axilaCard(d){const ordem=[1,2,3,4,5,6,0];const t=SK.axila.semana[parse(
   return`<section class="card"><h3>${ICONS.autocuidado} Axilas · clarear e cuidar</h3><p style="margin:0 0 6px">Hoje à noite: <b>${t}</b></p><ul class="items">${SK.axila.noite[t].map(passoLi).join('')}</ul>
   <div class="semana" style="margin-top:10px">${ordem.map(w=>`<div class="dia ${parse(d).getDay()===w?'hoje':''}"><span class="muted">${DIA[w].slice(0,3)}</span><b>${SK.axila.semana[w]}</b></div>`).join('')}</div>
   <ul class="items" style="margin-top:10px">${SK.axila.dicas.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ul></section>`}
+function noiteModal(w){const hoje=parse(TODAY()).getDay();let d=new Date(parse(TODAY()));d.setDate(d.getDate()+((w-hoje+7)%7));const n=noiteDe(iso(d));const b=SK.blocos[n.t];
+  const passos=[...SK.noiteIni.map(x=>[x,'']),...b.passos,...(n.domingo?[['Medicube Collagen Night Wrapping Mask','Por cima de tudo. Só 5 ml, por isso 1x por semana.']]:[]),...SK.noiteFim.map(x=>[x,''])];
+  $('#modal-root').innerHTML=`<div class="ov" id="ov-noite"><div class="modal" role="dialog" aria-modal="true" aria-label="Tratamento da noite" style="max-width:520px">
+   <div class="spread" style="margin-bottom:4px"><span class="pill">${w===hoje?'Hoje · ':''}${DIA[w]}</span><button class="icon-btn" data-act="noite-x" aria-label="Fechar" style="font-size:20px">✕</button></div>
+   <h4 style="margin:6px 0 10px">Noite de ${esc(n.t)}${n.domingo?' + máscara':''}</h4>
+   ${n.nota?`<p class="pill warn" style="white-space:normal;margin:0 0 8px">${esc(n.nota)}</p>`:''}
+   <ul class="items">${passos.map(passoLi).join('')}</ul>
+   ${b.obs?`<p class="muted" style="margin:10px 0 0">${esc(b.obs)}</p>`:''}
+   <p class="muted" style="margin:10px 0 0">Axila: <b>${SK.axila.semana[w]}</b></p>
+   <div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn" data-act="noite-x">Fechar</button></div></div></div>`}
 function V_skincare(){const d=TODAY();const n=noiteDe(d);const b=SK.blocos[n.t];const ordem=[1,2,3,4,5,6,0];
   const feitos=[...Array(7)].map((_,i)=>{const x=new Date();x.setDate(x.getDate()-i);const r=S.skin.find(z=>z.id===iso(x))||{};return(r.manha?1:0)+(r.noite?1:0)}).reduce((a,c)=>a+c,0);
   return`<h2>Skincare</h2><p class="lead">A manhã é igual todo dia. À noite, os ativos se revezam pela semana para não irritar a pele. Rotina atualizada em 02/11/2026.</p>
   <section class="card alerta"><h3>${ICONS.saude} Cuidados importantes</h3><ul class="items">${SK.cuidados.map(c=>`<li><span>${esc(c)}</span></li>`).join('')}</ul></section>
   <div class="grid" style="margin-top:14px">
-   <section class="card"><h3>${ICONS.agenda} Hoje · ${DIA[parse(d).getDay()]}</h3>${skinHoje(d)}<p class="muted" style="margin:10px 0 0">${feitos} de 14 rotinas feitas nos últimos 7 dias.</p></section>
+   <section class="card"><h3>${ICONS.agenda} Hoje · ${DIA[parse(d).getDay()]}</h3>${skinHoje(d)}<button class="btn" data-act="noite" data-extra="${parse(d).getDay()}" style="margin-top:12px">Ver tratamento de hoje</button><p class="muted" style="margin:10px 0 0">${feitos} de 14 rotinas feitas nos últimos 7 dias.</p></section>
    <section class="card"><h3>${ICONS.autocuidado} Manhã (todo dia)</h3><ul class="items">${SK.manha.map(passoLi).join('')}</ul></section>
    <section class="card"><h3>${ICONS.notas} Noite de hoje: ${n.t}</h3>${n.nota?`<p class="pill warn" style="white-space:normal;margin:0 0 8px">${esc(n.nota)}</p>`:''}
     <ul class="items">${[...SK.noiteIni.map(x=>[x,'']),...b.passos,...(n.domingo?[['Medicube Collagen Night Wrapping Mask','Por cima de tudo. Só 5 ml, por isso 1x por semana.']]:[]),...SK.noiteFim.map(x=>[x,''])].map(passoLi).join('')}</ul>
     ${b.obs?`<p class="muted" style="margin:8px 0 0">${esc(b.obs)}</p>`:''}</section>
   </div>
-  <section class="card" style="margin-top:14px"><h3>${ICONS.agenda} Noites da semana</h3><div class="semana">${ordem.map(w=>{const t=SK.semana[w];return`<div class="dia ${parse(d).getDay()===w?'hoje':''}"><span class="muted">${DIA[w].slice(0,3)}</span><b>${t}${w===0?' + máscara':''}</b></div>`}).join('')}</div>
-   <p class="muted" style="margin:10px 0 0">Toda noite começa com Hada Labo Oil Cleansing, Darrow Actine e secar bem o rosto, e termina com Eucerin Anti-Pigment nos olhos e Laneige Lip Sleeping Mask.</p></section>
+  <section class="card" style="margin-top:14px"><h3>${ICONS.agenda} Noites da semana</h3><div class="semana">${ordem.map(w=>{const t=SK.semana[w];return`<button class="dia ${parse(d).getDay()===w?'hoje':''}" data-act="noite" data-extra="${w}" aria-label="Ver tratamento de ${DIA[w]}"><span class="muted">${DIA[w].slice(0,3)}</span><b>${t}${w===0?' + máscara':''}</b></button>`}).join('')}</div>
+   <p class="muted" style="margin:10px 0 0">Toque num dia para ver o passo a passo. Toda noite começa com Hada Labo Oil Cleansing, Darrow Actine e secar bem o rosto, e termina com Eucerin Anti-Pigment nos olhos e Laneige Lip Sleeping Mask.</p></section>
   <div class="grid" style="margin-top:14px">${Object.entries(SK.blocos).map(([k,v])=>`<section class="card"><h3>${k}</h3><ul class="items">${v.passos.map(passoLi).join('')}</ul>${v.obs?`<p class="muted" style="margin:8px 0 0">${esc(v.obs)}</p>`:''}</section>`).join('')}</div>
   <div style="margin-top:14px">${axilaCard(d)}</div>
   <div class="grid" style="margin-top:14px"><section class="card"><h3>${ICONS.tarefas} O que não misturar</h3><ul class="items">${SK.naoMisturar.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ul></section>
    <section class="card"><h3>${ICONS.compras} Produtos</h3><ul class="items">${SK.produtos.map(([g,l])=>`<li style="display:block"><b style="font-weight:600">${g}</b><div class="muted">${esc(l)}</div></li>`).join('')}</ul></section></div>`}
+
+/* ---------- dieta e treino (montados em 23/11/2026: ganhar massa e comer melhor; 65 kg, 1,74 m; sem restrições; não amamenta) ---------- */
+const DT={
+ meta:[['Calorias','2.200 a 2.300 kcal'],['Proteína','110 a 130 g'],['Água','2,5 litros (10 copos)']],
+ cuidados:['É uma orientação geral para ganho de massa com alimentação equilibrada. Não substitui nutricionista: se puder, leve este cardápio numa consulta para ajustar às suas medidas e exames.','Você tem diástase: o treino foi adaptado para ajudar a fechá-la. O ideal é ter o acompanhamento de uma fisioterapeuta pélvica, que mede a abertura e ajusta os exercícios. Peça também liberação ao seu médico.'],
+ ref:[['cafe','09h30','Café da manhã'],['almoco','12h30','Almoço'],['lanche','16h00','Lanche da tarde'],['jantar','19h30','Jantar'],['ceia','21h30','Ceia']],
+ opcoes:{
+  cafe:['2 fatias de pão integral com 2 ovos mexidos e queijo branco + 1 fruta + café com leite','Tapioca (2 colheres de goma) com frango desfiado e queijo + 1 fruta','Iogurte natural (170 g) com 3 colheres de aveia, banana e 1 colher de pasta de amendoim + 2 ovos cozidos','Cuscuz (1 xícara) com 2 ovos e queijo coalho + café com leite'],
+  lanche:['Vitamina: 1 copo de leite, 1 banana, 2 colheres de aveia e 1 colher de pasta de amendoim','Sanduíche de pão integral com atum ou frango, queijo e salada','Iogurte natural com granola e 1 fruta + 1 punhado de castanhas','2 ovos cozidos + 1 fruta + 1 fatia de pão integral'],
+  ceia:['1 copo de leite ou iogurte natural com 1 colher de aveia','2 fatias de queijo branco + 1 fruta','Omelete de 1 ovo e 1 clara']},
+ // almoço e jantar por dia da semana (0 = domingo)
+ almoco:{1:'Frango grelhado, arroz, feijão e salada',2:'Carne moída refogada, arroz, feijão e batata cozida',3:'Camarão refogado, arroz e salada',4:'Macarrão com frango desfiado ao molho de tomate e salada',5:'Bife acebolado, arroz, feijão e purê de batata',6:'Frango assado com batata e salada',0:'Almoço de família à vontade: comece pela salada e pela carne'},
+ jantar:{1:'Omelete de 3 ovos com queijo + batata cozida',2:'Sanduíche de pão com frango desfiado, queijo e salada',3:'Sopa de carne com batata e macarrão',4:'Cuscuz com 2 ovos e queijo',5:'Arroz, feijão e frango (o que sobrou do almoço)',6:'Refeição livre (pizza, hambúrguer, japonês): só uma vez na semana',0:'Tapioca com frango e queijo + salada'},
+ prato:'No almoço: metade do prato com salada e legumes, 4 colheres de arroz (ou o carboidrato do dia), 1 concha de feijão e 1 bife ou filé do tamanho da palma da mão (120 a 150 g).',
+ trocas:[['Proteína','frango ⇄ carne ⇄ camarão ⇄ 3 ovos ⇄ 1 lata de atum'],['Carboidrato','4 colheres de arroz ⇄ 2 batatas médias ⇄ 1 xícara de macarrão ⇄ 1 xícara de cuscuz ⇄ 2 fatias de pão integral ⇄ 2 colheres de goma de tapioca'],['Fruta','qualquer fruta da estação: banana, mamão, manga, maçã, uva, abacaxi'],['Gordura boa','1 colher de pasta de amendoim ⇄ 1 punhado de castanhas ⇄ 1 fio de azeite ⇄ ¼ de abacate']],
+ dicas:['Coloque proteína em todas as refeições: é ela que constrói músculo junto com o treino.','Não pule o café da manhã nem o lanche: para ganhar massa você precisa comer o suficiente.','Nos dias de treino, faça o lanche das 16h uma hora antes do exercício.','Durma 7 a 8 horas: o músculo se recupera no sono.','Whey e creatina ajudam, mas são opcionais. Converse com a nutricionista antes de começar.'],
+ feira:[['Peito de frango','2 kg','Açougue e peixaria'],['Carne moída','1 kg','Açougue e peixaria'],['Bife (patinho ou alcatra)','1 kg','Açougue e peixaria'],['Camarão limpo','500 g','Açougue e peixaria'],['Ovos','2 dúzias','Frios e laticínios'],['Iogurte natural','6 potes','Frios e laticínios'],['Queijo branco','500 g','Frios e laticínios'],['Leite','6 litros','Frios e laticínios'],['Atum em lata','4 latas','Mercearia'],['Aveia em flocos','1 pacote','Mercearia'],['Pasta de amendoim','1 pote','Mercearia'],['Arroz','2 kg','Mercearia'],['Feijão','1 kg','Mercearia'],['Macarrão','1 kg','Mercearia'],['Molho de tomate','2 caixas','Mercearia'],['Goma de tapioca','1 kg','Mercearia'],['Flocão de milho (cuscuz)','1 pacote','Mercearia'],['Pão integral','2 pacotes','Padaria'],['Batata','3 kg','Hortifrúti'],['Banana','2 dúzias','Hortifrúti'],['Frutas variadas','para a semana','Hortifrúti'],['Folhas e tomate para salada','para a semana','Hortifrúti'],['Cebola e alho','para a semana','Hortifrúti']]
+};
+const TR={
+ semana:{1:'A',2:'Bike',3:'B',4:'Descanso',5:'A',6:'Bike',0:'Descanso'},
+ nomes:{A:'Treino A · pernas e costas',B:'Treino B · glúteos e braços',Bike:'Bicicleta',Descanso:'Descanso'},
+ aquece:'Aqueça 5 minutos na bicicleta, bem leve, antes do treino A ou B.',
+ A:[['Agachamento livre','3 × 12','Pés na largura dos ombros, desça como quem senta numa cadeira.'],['Ponte de glúteo','3 × 15','Deitada, suba o quadril e aperte o glúteo 2 segundos lá em cima.'],['Flexão na parede','3 × 10 a 12','Mãos na parede na altura do peito. Solte o ar e encolha a barriga ao empurrar.'],['Remada curvada com mochila ou galão','3 × 12','Coloque peso na mochila (garrafas de água ou livros).'],['Respiração com ativação do abdômen','2 × 10','Igual ao primeiro exercício da rotina da diástase, para fechar o treino.']],
+ B:[['Afundo alternado','3 × 10 cada perna',''],['Elevação de quadril com uma perna','3 × 10 cada perna',''],['Desenvolvimento sentada com garrafas ou halteres','3 × 12','Sentada, costas apoiadas. Solte o ar ao subir os pesos.'],['Tríceps na cadeira','3 × 10','Mãos na beira de uma cadeira firme, desça e suba o corpo.'],['Deslizar o calcanhar','2 × 10 cada perna','Igual ao da rotina da diástase.']],
+ bike:[['Semanas 1 e 2','20 minutos em ritmo leve, conseguindo conversar.'],['Semanas 3 e 4','25 minutos, com 5 tiros de 30 segundos mais fortes.'],['Depois','30 minutos, alternando 2 minutos leves e 1 minuto forte.']],
+ diastase:[['Respiração com ativação do abdômen','10 vezes','Deitada de barriga para cima, joelhos dobrados. Puxe o ar abrindo as costelas. Ao soltar o ar, contraia o assoalho pélvico (como quem segura o xixi) e puxe o umbigo em direção à coluna. Segure 5 segundos.'],
+  ['Báscula da pelve','2 × 10','Na mesma posição, solte o ar e encoste a lombar no chão, girando o quadril de leve. Volte devagar.'],
+  ['Deslizar o calcanhar','2 × 10 cada perna','Com a barriga encolhida, deslize um calcanhar no chão até esticar a perna e volte. Sem deixar a lombar sair do chão.'],
+  ['Marcha deitada','2 × 10 cada perna','Barriga encolhida, tire um pé do chão com o joelho dobrado, encoste de novo e troque.'],
+  ['Ponte de glúteo com respiração','2 × 12','Solte o ar e encolha a barriga ao subir o quadril.'],
+  ['Quatro apoios com a barriga encolhida','3 × 20 segundos','A partir da 3ª semana. De quatro, encolha a barriga e mantenha as costas retas, respirando normalmente.']],
+ evitar:['Abdominal tradicional, canivete, prancha no chão e qualquer exercício em que a barriga forme um "bico" ou "cone" no meio.','Prender a respiração ao fazer força: solte o ar sempre na hora do esforço, inclusive ao pegar a Marina no colo.','Levantar da cama de frente: vire de lado e use os braços para sentar.','Se a barriga estufar no meio durante um exercício, volte para uma versão mais fácil.'],
+ teste:'Para acompanhar, uma vez por mês: deitada, joelhos dobrados, levante só um pouco a cabeça e coloque os dedos na linha do umbigo. Conte quantos dedos cabem na abertura. Anote e mostre à fisioterapeuta.',
+ dicas:['Descanse 60 a 90 segundos entre as séries.','Quando as 3 séries ficarem fáceis, aumente 2 repetições ou o peso. É isso que faz o músculo crescer.','Um par de halteres de 2 a 4 kg ou um kit de elásticos ajuda muito a evoluir em casa.','Se sentir dor (não cansaço), pare o exercício e troque por outro.']
+};
+/* ---------- guia devocional e de conhecimento (23/11/2026): ciclo de 28 dias, 4 áreas por dia ---------- */
+const GUIA_SEM=['Começo','Constância','Cuidado','Gratidão e generosidade'];
+const GUIA_AREAS=[['esp','Espiritual','notas'],['fis','Físico','saude','#treino','Abrir o Treino'],['fin','Financeiro','financas','#financas','Abrir Finanças'],['casa','Casa','casa','#casa','Abrir a Casa']];
+// cada dia: [tema, [prática, reflexão, intenção], [físico: saber, fazer], [financeiro: saber, fazer], casa (15 minutos)]
+const GUIA=[
+['Recomeçar',['Ao acordar, antes do celular, faça 3 respirações lentas e profundas.','Cada manhã é um recomeço. Você não precisa dar conta de tudo hoje, só do próximo passo.','Hoje eu começo com calma e dou um passo de cada vez.'],['Músculo cresce com três coisas juntas: treino de força, proteína suficiente e sono.','Tire uma foto de frente e de lado e anote cintura, quadril e braço. Daqui a 4 semanas você compara.'],['Organizar o dinheiro começa por saber para onde ele vai.','Lance em Finanças tudo o que você gastar hoje, até o cafezinho.'],'Escolha um ponto que acumula coisas (bancada, mesa, aparador) e deixe zerado em 15 minutos.'],
+['Usar bem o tempo',['Escreva as 3 coisas que mais importam hoje, e só elas.','Um dia bem vivido é feito de poucas coisas certas, e não de muitas feitas com pressa.','Eu escolho onde coloco a minha atenção.'],['A diástase fecha com o músculo profundo do abdômen (transverso) trabalhando, e não com abdominal tradicional.','Faça a rotina de diástase de hoje na aba Treino, devagar e respirando.'],['Contas fixas se repetem todo mês; variáveis mudam. As fixas são o piso do seu orçamento.','Confira se todas as contas fixas estão cadastradas em Finanças.'],'Geladeira: jogue fora o que venceu e limpe uma prateleira.'],
+['Soltar o controle',['Escreva um plano da semana e, ao lado, uma coisa que não depende de você.','Planejar é bom. Querer controlar tudo cansa. A paz está em fazer a sua parte e soltar o resto.','Faço a minha parte e solto o que não depende de mim.'],['Para ganhar massa você precisa de 110 a 130 g de proteína por dia, uns 25 a 30 g em cada refeição.','Confira se o seu café da manhã teve ovo, queijo ou iogurte.'],['Uma regra simples: 50% para o essencial, 30% para o estilo de vida e 20% para guardar ou quitar dívidas.','Veja quanto da sua renda já está comprometido com contas fixas.'],'Uma gaveta da cozinha: tire o que não usa e deixe só o que serve.'],
+['Prioridades',['Fique 5 minutos em silêncio pensando no que é essencial na sua vida agora.','Quando o essencial está no lugar certo, o resto se organiza em volta dele.','O essencial vem primeiro.'],['Solte o ar no momento de fazer força. Isso protege a diástase e o assoalho pélvico.','Em cada exercício de hoje, expire na subida, no esforço.'],['Reserva de emergência é o dinheiro que segura imprevistos: o ideal são 6 meses do seu custo fixo.','Multiplique o seu custo fixo por 6. Esse é o tamanho da sua reserva.'],'Bolsa e carteira: esvazie, jogue fora papéis e deixe só o necessário.'],
+['Ser cuidada',['Peça ou aceite uma ajuda hoje, sem se justificar.','Cuidar de todo mundo inclui deixar que cuidem de você. Pedir ajuda é sabedoria, não fraqueza.','Eu também mereço cuidado.'],['Às vezes a sede parece fome. Beber água ao longo do dia ajuda a energia e o treino.','Deixe uma garrafa de 1 litro à vista e encha duas vezes e meia.'],['A fatura do cartão é dinheiro que você já gastou. Ela precisa caber no mês.','Confira a fatura atual dos seus cartões em Finanças.'],'Banheiro: tire produtos vencidos e embalagens vazias (o skincare também).'],
+['Sem ansiedade',['Respiração 4-7-8: inspire em 4 tempos, segure 7, solte em 8. Repita 4 vezes.','A ansiedade mora no futuro. A respiração traz você de volta para o único momento em que dá para agir: agora.','Eu volto para o agora.'],['O hormônio que ajuda a construir músculo é liberado no sono profundo.','Deixe o celular longe 30 minutos antes de dormir.'],['Pequenos gastos repetidos (delivery, aplicativos) somam muito no fim do mês.','Some quanto foi de delivery este mês.'],'Roupas da Marina que não servem mais: separe para doar ou guardar.'],
+['Descanso',['Passe 20 minutos sem celular, só presente com quem está perto.','Descansar não é preguiça. É o que permite continuar com leveza na semana que vem.','Descansar também é cuidar de mim.'],['O descanso faz parte do treino: é nele que o músculo se reconstrói.','Faça só uma caminhada leve de 20 minutos, se quiser com a Marina ou as cachorras.'],['Um dia sem gastos por semana treina o controle e mostra o que é hábito.','Hoje, dia sem compras.'],'Só 5 minutos: deixe a casa pronta para começar a semana.'],
+['Não desistir',['Escreva em uma frase por que você começou este cuidado com você.','Os resultados vêm para quem não para. Lembrar o motivo ajuda nos dias sem vontade.','Constância vale mais que pressa.'],['Sobrecarga progressiva: o músculo cresce quando o esforço aumenta aos poucos.','Anote quantas repetições você conseguiu em cada exercício hoje.'],['Pague-se primeiro: separe o valor de guardar assim que a renda entra, e não com o que sobrar.','Defina um valor fixo para guardar todo mês.'],'Rotina de 10 minutos antes de dormir: sala e cozinha em ordem.'],
+['Força e dignidade',['Lembre de uma situação difícil que você já superou e do que aprendeu nela.','Você já atravessou muita coisa, inclusive uma gravidez e os primeiros meses da Marina. Essa força continua aí.','Eu sou mais forte do que imagino.'],['Carregue a Marina alternando os lados e, para levantá-la do chão, agache em vez de curvar a coluna.','Preste atenção hoje em como você pega e carrega a Marina.'],['Assinaturas esquecidas são dinheiro saindo todo mês sem você perceber.','Liste suas assinaturas e cancele uma que você não usa.'],'Despensa: veja o que já tem antes de fazer a Feira do mês.'],
+['Tempo para tudo',['Escreva uma coisa boa desta fase com a Marina pequena.','Cada fase tem o seu tempo. Esta é diferente das outras, e está tudo bem.','Eu aproveito a fase em que estou, sem me comparar.'],['Carboidrato não é vilão: ele dá energia para treinar e ajuda o ganho de massa.','Coma um lanche com carboidrato uma hora antes do treino.'],['Juros compostos: R$ 300 por mês a 0,8% ao mês viram cerca de R$ 60 mil em 10 anos (você teria colocado R$ 36 mil).','Pense em um valor que você conseguiria guardar todo mês sem sofrer.'],'Guarda-roupa: arrume uma prateleira e separe o que não usa há um ano.'],
+['Coragem',['Faça por 10 minutos algo que você vem adiando.','Coragem não é ausência de medo. É dar o primeiro passo mesmo com ele.','Eu faço, mesmo com medo.'],['A bicicleta melhora o coração e a recuperação e, em ritmo moderado, não atrapalha o ganho de massa.','Faça 20 minutos de bike em ritmo de conversa.'],['Se houver dívidas, pague primeiro as de juros mais altos: rotativo do cartão e cheque especial.','Liste as dívidas que tiver, com os juros de cada uma.'],'Papéis e documentos: junte tudo numa pasta só e confira a validade dos documentos.'],
+['Respeitar o cansaço',['Deite 10 minutos com as pernas apoiadas na parede, respirando devagar.','Noites mal dormidas e dias cheios cansam. Parar um pouco não é perder tempo, é recarregar.','Eu respeito o meu cansaço.'],['Faça o autoteste da diástase descrito na aba Treino e anote quantos dedos cabem.','Anote o resultado para comparar no fim do ciclo.'],['Parcelas pequenas somadas comprometem os meses que vêm.','Veja quanto você já tem parcelado para os próximos meses.'],'Brinquedos da Marina: um cesto por tipo e o que é grande demais para a idade dela guardado.'],
+['Comer com presença',['Coma as primeiras garfadas do almoço em silêncio, sentindo o sabor.','Comer com atenção é uma forma de cuidar de si, e ajuda a perceber a fome e a saciedade.','Eu nutro o meu corpo com carinho.'],['Fibras de verduras, frutas e feijão ajudam o intestino e a saciedade.','Coloque meio prato de salada e legumes no almoço.'],['Ir ao mercado com lista evita compras por impulso.','Na próxima compra, use só a lista da Feira do mês.'],'Cantinho das cachorras: lave os potes e as caminhas e confira a ração.'],
+['Aquietar',['Sente-se 10 minutos em silêncio contando as respirações de 1 a 10, e recomece quando se distrair.','No meio do barulho da casa, alguns minutos de silêncio mudam o dia inteiro.','No silêncio eu me encontro.'],['Alongar e soltar o corpo reduz dor nas costas e no pescoço.','Faça 5 minutos de alongamento antes de dormir.'],['Regra das 48 horas: espere dois dias antes de qualquer compra fora do planejado.','Coloque em espera algo que você queria comprar.'],'Varanda: deixe a bicicleta livre e o espaço do treino arrumado.'],
+['O corpo como casa',['Deitada, passe a atenção devagar dos pés à cabeça, notando cada parte do corpo, por 5 minutos.','Seu corpo não é inimigo nem projeto de perfeição. É a sua casa e merece cuidado com carinho.','Eu cuido do meu corpo com gratidão, e não com cobrança.'],['Sinal de alerta: se a barriga fizer um bico ou estufar no meio durante um exercício, ele está pesado demais para agora.','Observe a barriga nos exercícios de hoje e troque o que fizer bico.'],['Reserva de emergência fica em lugar seguro e com resgate no mesmo dia, como Tesouro Selic ou CDB de liquidez diária.','Veja onde está a sua reserva e quanto ela rende.'],'Chaves, carregadores e controles: um lugar fixo para cada.'],
+['Guardar a mente',['Deixe de seguir 3 perfis que fazem você se sentir mal.','O que entra pelos olhos e ouvidos forma o que você sente. Escolha bem o que consome.','Eu escolho o que entra na minha mente.'],['Ultraprocessados (biscoitos, salgadinhos, doces) atrapalham a energia e o ganho de massa.','Troque um doce ou biscoito de hoje por fruta com castanhas.'],['Gastos da Marina merecem uma categoria própria para você ver quanto ela custa por mês.','Lance os gastos da Marina com a categoria certa.'],'Produtos de limpeza: veja o que falta e coloque na Feira do mês.'],
+['Uma casa em paz',['Monte um cantinho de calma em casa: uma planta, uma vela, um livro, um lugar para sentar.','A casa é construída com esforço, mas também precisa de um lugar para respirar.','A minha casa é lugar de paz.'],['Creatina é o suplemento mais estudado para ganho de força, mas converse com o médico ou a nutricionista antes.','Anote suas dúvidas sobre dieta e suplementos para levar à consulta.'],['Com uma filha, proteção importa: plano de saúde, seguro de vida e documentos em dia.','Revise o que a família tem de plano de saúde e seguro.'],'Combine com a Beta as tarefas da semana (o cronograma da geladeira ajuda).'],
+['Ensinar com o exemplo',['Fique 15 minutos com a Marina sem celular, só brincando e olhando para ela.','Os filhos aprendem mais com o que a gente é do que com o que a gente diz.','Ela aprende com o meu exemplo.'],['Uma fisioterapeuta pélvica avalia a diástase e o assoalho pélvico e ajusta os exercícios para você.','Pesquise ou agende uma avaliação com fisioterapeuta pélvica.'],['Funcionária registrada tem 13º, férias e encargos. Guardar um pouco por mês evita aperto no fim do ano.','Confira se o 13º e as férias da Beta estão previstos no orçamento.'],'Sapatos: separe os que não usa para doar.'],
+['Bondade e perdão',['Escreva uma carta, sem enviar, soltando uma mágoa que ainda pesa.','Perdoar não é concordar com o que aconteceu. É tirar de você um peso que não precisa carregar.','Eu solto o que pesa.'],['Durante o ganho de massa o peso pode subir um pouco. Medidas e fotos contam mais do que a balança.','Meça só a cintura hoje e compare com o dia 1.'],['Metas financeiras funcionam melhor com valor e prazo.','Crie uma meta com valor e data na aba Metas.'],'Gaveta de remédios: tire os vencidos e separe os da Marina.'],
+['Decidir com clareza',['Escreva uma decisão que está pendente, com prós e contras, e converse com alguém de confiança.','Não saber o que fazer é normal. Clareza vem de colocar no papel e ouvir quem quer o seu bem.','Eu decido com calma e clareza.'],['Sol pela manhã ajuda o sono à noite e a vitamina D.','Pegue 10 minutos de sol antes das 10h.'],['Um fechamento semanal de 10 minutos evita surpresas no fim do mês.','Abra o resumo do mês em Finanças e veja como está.'],'Cozinha: potes sem tampa e tampas sem pote, fora.'],
+['Gentileza consigo',['Diante do espelho, diga em voz alta 3 coisas boas sobre você.','O corpo que gerou a Marina é motivo de orgulho. Fale com você como falaria com uma amiga.','Eu me olho com gentileza.'],['Consistência vale mais que perfeição: fazer 80% do plano já traz resultado.','Conte quantos treinos você fez nestas 3 semanas.'],['Guardar para o futuro (aposentadoria) fica mais leve quanto mais cedo começa.','Anote quanto você já tem guardado para o longo prazo.'],'Resolva um item da lista "ajeitar" da Casa.'],
+['Gratidão',['Escreva 3 coisas pelas quais você é grata hoje.','Gratidão não ignora o que é difícil, mas muda o lugar de onde você olha para ele.','Eu enxergo o que já é bom.'],['Cafeína até umas 6 horas antes de dormir para não atrapalhar o sono.','Tome o último café até as 16h.'],['Quem é grato pelo que tem compra menos por impulso.','Anote três coisas que você já tem e ama.'],'Lençóis e toalhas: deixe dois jogos por cama e separe o resto.'],
+['Dinheiro e valores',['Escreva os seus 3 valores mais importantes e veja se os seus gastos combinam com eles.','O jeito como você usa o dinheiro mostra o que você valoriza. Vale olhar sem culpa.','O meu dinheiro segue os meus valores.'],['Dor muscular de 24 a 48 horas depois do treino é normal. Movimento leve ajuda a passar.','Se estiver dolorida, faça bike leve em vez de ficar parada.'],['Generosidade planejada: se você doa ou ajuda alguma causa, colocar o valor no orçamento traz constância sem aperto.','Se fizer sentido para você, defina esse valor no orçamento.'],'Fotos do celular: apague 100 repetidas ou desfocadas.'],
+['Pequenos passos',['Cumpra hoje uma pequena promessa que você fez a si mesma.','Grandes mudanças nascem de pequenas fidelidades diárias, no corpo, na casa e no dinheiro.','Eu cumpro o que prometo para mim.'],['Comer devagar e sem tela ajuda a perceber a fome e a saciedade.','Almoce hoje sem celular.'],['Pix pequenos e trocos também contam.','Lance todos os Pix da semana em Finanças.'],'Caixa de e-mail: 15 minutos apagando e cancelando o que não quer receber.'],
+['Dar com alegria',['Faça um gesto generoso hoje sem esperar nada em troca.','Doar faz bem a quem recebe e a quem dá. O que não serve mais para você pode ajudar outra casa.','A generosidade me faz bem.'],['Celular na altura dos olhos poupa o pescoço e os ombros.','Hoje, levante o celular em vez de baixar a cabeça.'],['Desapego também gera dinheiro: vender o que não usa ajuda a reserva.','Separe três itens para vender ou doar.'],'Leve hoje a caixa de doação que você montou nestas semanas.'],
+['Planejar com calma',['Planeje a semana que vem em 10 minutos: compromissos, refeições e treinos.','Planejar com calma evita a pressa, e a pressa costuma sair cara.','Eu planejo e não ajo no impulso.'],['Planejar as refeições evita escolhas de última hora.','Confira com a Beta o cardápio de amanhã.'],['Janeiro tem IPVA, IPTU, material escolar e as contas de fim de ano. Planejar agora evita aperto.','Anote os gastos de janeiro como lembretes ou contas em Finanças.'],'Lista "instalar" da Casa: agende o que depende de um profissional.'],
+['O que é riqueza',['Liste 5 coisas valiosas na sua vida que dinheiro nenhum compra.','O que você valoriza aparece na agenda e no extrato. Riqueza também é tempo, saúde e gente amada.','Eu sei o que é riqueza para mim.'],['Compare-se só com você mesma: o corpo depois da gravidez tem o próprio tempo.','Escreva três coisas que o seu corpo faz bem.'],['Patrimônio é o que você tem menos o que você deve.','Faça a conta: o que tenho menos o que devo.'],'Deixe a bolsa da Marina pronta: fraldas, roupa de troca e lenços.'],
+['Contentamento',['Releia as anotações deste ciclo e escreva o que mudou em você.','Contentamento é ter paz com o que se tem enquanto se caminha para o que se quer.','Estou em paz com o caminho e sigo em frente.'],['Repita as fotos e as medidas do dia 1 e o teste da diástase, e compare.','Anote o que mudou, mesmo que seja pouco.'],['Comparar meses mostra se os hábitos estão funcionando.','Compare os gastos deste mês com os do mês passado em Finanças.'],'Dê uma volta pela casa, veja o que mudou em 4 semanas e escolha o próximo cômodo.']
+];
+let guiaOff=0;
+const GUIA_INI=()=>cfg('guia').inicio||'2026-11-23';
+const diffDias=(a,b)=>Math.round((parse(a)-parse(b))/864e5);
+const guiaIdx=d=>((diffDias(d,GUIA_INI())%28)+28)%28;
+function gDoc(d=TODAY()){return S.guia.find(x=>x.id===d)||{}}
+function gSave(d,ch){const{id:_,...r}=gDoc(d);save('guia',d,{...r,...ch})}
+function guiaData(){const x=parse(TODAY());x.setDate(x.getDate()+guiaOff);return iso(x)}
+function guiaChecks(d){const fe=gDoc(d).feitos||[];return`<div class="gchecks">${GUIA_AREAS.map(([k,l])=>`<label><button class="check ${fe.includes(k)?'on':''}" data-act="guia" data-id="${k}" data-extra="${d}" aria-label="${l} feito"></button>${l}</label>`).join('')}</div>`}
+function guiaHoje(){const d=TODAY();const i=guiaIdx(d);const[tema,[ref,refl]]=GUIA[i];
+  return`<p class="muted" style="margin:0">Dia ${i+1} de 28 · ${GUIA_SEM[Math.floor(i/7)]}</p><div class="gref">${esc(tema)}</div><p style="margin:0 0 10px"><b style="font-weight:600">Prática:</b> ${esc(ref)}</p>${guiaChecks(d)}<a class="mais-link" href="#guia">Abrir o guia de hoje</a>`}
+function guiaNota(d){const n=gDoc(d).nota||'';
+  $('#modal-root').innerHTML=`<div class="ov"><form class="modal" id="gnf"><h4>Anotações do dia</h4><p class="muted" style="margin-top:-6px">O que você sentiu na prática, uma gratidão ou algo que aprendeu.</p><div class="fld"><label for="gn-t">Anotação</label><textarea id="gn-t" rows="5">${esc(n)}</textarea></div><div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" id="gn-c">Cancelar</button><button class="btn">Salvar</button></div></form></div>`;
+  $('#gn-c').onclick=()=>$('#modal-root').innerHTML='';$('#gnf').onsubmit=e=>{e.preventDefault();gSave(d,{nota:$('#gn-t').value.trim()});$('#modal-root').innerHTML='';flash('Anotação salva')}}
+function V_guia(){const d=guiaData();const i=guiaIdx(d);const[tema,[ref,refl,ora],[fs,ff],[ns,nf],casa]=GUIA[i];const fe=gDoc(d).feitos||[];const nota=gDoc(d).nota;
+  const ini=parse(TODAY());ini.setDate(ini.getDate()-guiaIdx(TODAY()));
+  const ciclo=[...Array(28)].map((_,k)=>{const x=new Date(ini);x.setDate(x.getDate()+k);const ds=iso(x);const n=(gDoc(ds).feitos||[]).length;return`<span class="gdot ${n===4?'on':n?'meio':''} ${ds===d?'hoje':''}" title="Dia ${k+1}: ${n} de 4"></span>`}).join('');
+  const completos=[...Array(28)].filter((_,k)=>{const x=new Date(ini);x.setDate(x.getDate()+k);return(gDoc(iso(x)).feitos||[]).length===4}).length;
+  const area=(k,t,icon,saber,fazer,href,lk)=>`<section class="card"><div class="spread"><h3 style="margin:0">${ICONS[icon]} ${t}</h3><button class="check ${fe.includes(k)?'on':''}" data-act="guia" data-id="${k}" data-extra="${d}" aria-label="${t} feito"></button></div><p class="gk">Saber</p><p style="margin:0">${esc(saber)}</p>${fazer?`<p class="gk">Fazer hoje</p><p style="margin:0">${esc(fazer)}</p>`:''}${href?`<a class="mais-link" href="${href}">${lk}</a>`:''}</section>`;
+  return`<div class="spread"><h2>Guia do dia</h2><div class="row" style="gap:6px"><button class="btn ghost" data-act="guia-nav" data-id="-1" aria-label="Dia anterior">‹</button>${guiaOff?`<button class="btn ghost" data-act="guia-nav" data-id="0">Hoje</button>`:''}<button class="btn ghost" data-act="guia-nav" data-id="1" aria-label="Próximo dia">›</button></div></div>
+  <p class="lead">Um pouco de cada área por dia, em uns 20 minutos: uma pausa para você, um conhecimento para o corpo, um para o dinheiro e uma tarefa de 15 minutos na casa. O ciclo tem 28 dias e recomeça sozinho.</p>
+  <section class="card gesp"><p class="muted" style="margin:0">${d===TODAY()?'Hoje':esc(DIA[parse(d).getDay()])+', '+d.slice(8)+'/'+d.slice(5,7)} · Dia ${i+1} de 28 · Semana ${Math.floor(i/7)+1}: ${GUIA_SEM[Math.floor(i/7)]}</p>
+   <div class="spread" style="margin-top:6px;align-items:flex-start"><div><div class="gtema">${esc(tema)}</div><div class="gref">Espiritual · uns 5 minutos</div></div><label class="row" style="gap:8px;white-space:nowrap"><button class="check ${fe.includes('esp')?'on':''}" data-act="guia" data-id="esp" data-extra="${d}" aria-label="Espiritual feito"></button>Fiz</label></div>
+   <p class="gk">Prática</p><p style="margin:0">${esc(ref)}</p><p class="gk">Reflexão</p><p style="margin:0">${esc(refl)}</p><p class="gk">Intenção do dia</p><p class="gora" style="margin-top:4px">${esc(ora)}</p>
+   ${nota?'':'<p class="muted" style="margin:10px 0 0">Se quiser, anote o que você sentiu ou percebeu.</p>'}
+   ${nota?`<div class="gnota">${esc(nota)}</div>`:''}<button class="btn ghost" style="margin-top:10px" data-act="guia-nota" data-extra="${d}">${nota?'Editar anotação':'Anotar'}</button></section>
+  <div class="grid" style="margin-top:16px">${area('fis','Físico','saude',fs,ff,'#treino','Abrir o Treino')}${area('fin','Financeiro','financas',ns,nf,'#financas','Abrir Finanças')}${area('casa','Casa · 15 minutos','casa',casa,'','#casa','Abrir a Casa')}</div>
+  <section class="card" style="margin-top:16px"><div class="spread"><h3 style="margin:0">${ICONS.metas} Seu ciclo</h3><span class="pill">${completos} de 28 dias completos</span></div><div class="gdots">${ciclo}</div><p class="muted" style="margin:10px 0 0">Cheio: as quatro áreas feitas. Meio: parte delas. O ciclo começou em ${GUIA_INI().split('-').reverse().join('/')}.</p><button class="icon-btn" style="margin-top:6px" data-act="guia-reset">Recomeçar do dia 1 hoje</button></section>
+  <section class="card" style="margin-top:16px"><h3>${ICONS.estudos} As 4 semanas</h3><ul class="items">${GUIA_SEM.map((s,k)=>`<li style="display:block"><b style="font-weight:600">Semana ${k+1} · ${s}</b><div class="muted">${GUIA.slice(k*7,k*7+7).map(g=>esc(g[0])).join(' · ')}</div></li>`).join('')}</ul></section>`}
+/* ---------- inglês e terapia (23/11/2026): rotina em config/rotina, registros nas coleções ingles e terapia ---------- */
+const AU={
+ ingles:{nome:'Inglês',item:'aula',Item:'Aula',quem:'Professora',icon:'estudos',vezes:'3 vezes por semana',lead:'Aula particular 3 vezes por semana. Registre a data e o assunto de cada aula para acompanhar o que já estudou.'},
+ terapia:{nome:'Terapia',item:'sessão',Item:'Sessão',quem:'Terapeuta',icon:'saude',vezes:'1 vez por semana',lead:'Uma sessão por semana. Anote o que conversaram e o que quer levar para a próxima.'}};
+const rot=t=>({dias:[],hora:'',quem:'',valor:'',...(cfg('rotina')[t]||{})});
+const AUDIAS=[1,2,3,4,5,6,0];
+const aulaNoDia=(t,d)=>S[t].filter(x=>x.data===d);
+const marcadaNoDia=(t,d)=>rot(t).dias.includes(parse(d).getDay());
+function addDias(d,n){const x=parse(d);x.setDate(x.getDate()+n);return iso(x)}
+function proxAulas(t,n=4){const out=[];for(let i=0;i<21&&out.length<n;i++){const d=addDias(TODAY(),i);if(marcadaNoDia(t,d))out.push(d)}return out}
+function semRegistro(t){const out=[];const desde=rot(t).desde||TODAY();for(let i=1;i<=21;i++){const d=addDias(TODAY(),-i);if(d>=desde&&marcadaNoDia(t,d)&&!aulaNoDia(t,d).length)out.push(d)}return out}
+const quando=d=>d===TODAY()?'hoje':d===addDias(TODAY(),1)?'amanhã':DIA[parse(d).getDay()]+', '+fmtDate(d);
+function rotinaTxt(t){const r=rot(t);if(!r.dias.length)return'';return AUDIAS.filter(w=>r.dias.includes(w)).map(w=>DIA[w].slice(0,3)).join(', ')+(r.hora?' às '+r.hora:'')}
+function editRotina(t){const A=AU[t],r=rot(t);
+  $('#modal-root').innerHTML=`<div class="ov"><form class="modal" id="rtf"><h4>${A.nome}: dias e horário</h4><div class="fld"><label>Dias da semana</label><div class="gchecks">${AUDIAS.map(w=>`<label><input type="checkbox" value="${w}" ${r.dias.includes(w)?'checked':''}> ${DIA[w].slice(0,3)}</label>`).join('')}</div></div><div class="fld"><label for="rt-h">Horário</label><input id="rt-h" type="time" value="${esc(r.hora)}"></div><div class="fld"><label for="rt-q">${A.quem}</label><input id="rt-q" value="${esc(r.quem)}"></div><div class="fld"><label for="rt-v">Valor por ${A.item} (opcional)</label><input id="rt-v" inputmode="decimal" placeholder="ex.: 120,00" value="${r.valor?Number(r.valor).toLocaleString('pt-BR',{minimumFractionDigits:2}):''}"></div><div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" id="rt-c">Cancelar</button><button class="btn">Salvar</button></div></form></div>`;
+  $('#rt-c').onclick=()=>$('#modal-root').innerHTML='';
+  $('#rtf').onsubmit=e=>{e.preventDefault();const dias=[...document.querySelectorAll('#rtf input[type=checkbox]:checked')].map(x=>+x.value);const{id:_,...c}=cfg('rotina');save('config','rotina',{...c,[t]:{desde:rot(t).desde||TODAY(),dias,hora:$('#rt-h').value,quem:$('#rt-q').value.trim(),valor:numBR($('#rt-v').value)||''}});$('#modal-root').innerHTML='';flash('Rotina salva')}}
+function aulaLi(t,x){const st=x.status&&x.status!=='Feita';
+  return`<li><div class="grow"><div><b style="font-weight:600" class="num">${fmtDate(x.data)}</b>${x.hora?` <span class="muted num">${esc(x.hora)}</span>`:''} ${st?`<span class="pill warn">${esc(x.status)}</span>`:''}</div>${x.assunto?`<div>${esc(x.assunto)}</div>`:''}${x.nota?`<div class="muted">${esc(x.nota)}</div>`:''}${x.levar?`<div class="muted">Para a próxima: ${esc(x.levar)}</div>`:''}</div>${editBtn(t,x.id)}</li>`}
+function V_aulas(t){const A=AU[t];const r=rot(t);const mes=TODAY().slice(0,7);
+  const L=[...S[t]].sort((a,b)=>(b.data+(b.hora||'')).localeCompare(a.data+(a.hora||'')));
+  const doMes=L.filter(x=>(x.data||'').startsWith(mes));const feitas=doMes.filter(x=>!x.status||x.status==='Feita').length;const faltas=doMes.length-feitas;
+  const prox=proxAulas(t);const pend=semRegistro(t);
+  const meses=[...new Set(L.map(x=>(x.data||'').slice(0,7)))];
+  const levar=t==='terapia'?(L.find(x=>x.levar)||{}).levar:'';
+  return`<div class="spread"><h2>${A.nome}</h2>${addBtn(t,'Registrar '+A.item)}</div><p class="lead">${A.lead}</p>
+  ${levar?`<section class="card alerta" style="margin-bottom:16px"><h3>${ICONS.notas} Para levar à próxima sessão</h3><p style="margin:0;white-space:pre-wrap">${esc(levar)}</p></section>`:''}
+  <section class="card"><div class="stats"><div><div class="muted">${A.Item}s feitas em ${MES[+mes.slice(5)-1]}</div><div class="stat num">${feitas}</div></div><div><div class="muted">Faltas ou remarcadas</div><div class="stat num">${faltas}</div></div>${r.valor?`<div><div class="muted">Valor do mês (${feitas} × ${brl(r.valor)})</div><div class="stat num">${brl(feitas*r.valor)}</div></div>`:''}</div></section>
+  <div class="grid" style="margin-top:16px">
+   <section class="card"><div class="spread"><h3 style="margin:0">${ICONS.agenda} Rotina</h3><button class="icon-btn" data-act="rotina" data-id="${t}">ajustar</button></div>
+    ${r.dias.length?`<p style="margin:10px 0 0"><b style="font-weight:600">${rotinaTxt(t)}</b>${r.quem?` · ${esc(r.quem)}`:''}</p><ul class="items" style="margin-top:8px">${prox.map(d=>{const reg=aulaNoDia(t,d)[0];return`<li><span class="grow">Próxima ${A.item}: ${quando(d)}</span>${reg?'<span class="pill">registrada</span>':d===TODAY()?addBtn(t,'Registrar',{data:d,hora:r.hora}):''}</li>`}).join('')}</ul>`:`<p style="margin:10px 0">Diga em quais dias e horário você tem ${t==='ingles'?'aula':'terapia'} (${A.vezes}). Assim ela aparece no Hoje e na Agenda.</p><button class="btn" data-act="rotina" data-id="${t}">Escolher dias e horário</button>`}</section>
+   <section class="card ${pend.length?'atencao':''}"><h3>${ICONS.tarefas} Falta registrar</h3>${pend.length?`<ul class="items">${pend.map(d=>`<li><span class="grow">${A.Item} de ${quando(d)}</span>${addBtn(t,'Registrar',{data:d,hora:r.hora})}</li>`).join('')}</ul>`:`<p class="empty">Tudo registrado. Quando passar um dia de ${A.item} sem registro, ele aparece aqui.</p>`}</section>
+  </div>
+  <section class="card" style="margin-top:16px"><h3>${ICONS[A.icon]} ${t==='ingles'?'Aulas e assuntos':'Sessões'}</h3>${L.length?meses.map(m=>`<p class="gk">${MES[+m.slice(5)-1]} de ${m.slice(0,4)} · ${L.filter(x=>x.data.startsWith(m)).length} ${A.item==='aula'?'aulas':'sessões'}</p><ul class="items">${L.filter(x=>x.data.startsWith(m)).map(x=>aulaLi(t,x)).join('')}</ul>`).join(''):`<p class="empty">Nenhuma ${A.item} registrada ainda.</p>`}</section>`}
+function aulasHoje(){const d=TODAY();const it=[];
+  ['ingles','terapia'].forEach(t=>{const A=AU[t],r=rot(t);const reg=aulaNoDia(t,d)[0];
+    if(reg)it.push(`<li>${ic(A.icon)}<span class="grow">${A.nome}${reg.hora?' · '+esc(reg.hora):''}<div class="muted">${esc(reg.assunto||reg.status||'registrada')}</div></span>${editBtn(t,reg.id)}</li>`);
+    else if(marcadaNoDia(t,d))it.push(`<li>${ic(A.icon)}<span class="grow">${A.nome}${r.hora?' às '+esc(r.hora):''} hoje</span>${addBtn(t,'Registrar',{data:d,hora:r.hora})}</li>`);
+    else{const p=proxAulas(t,1)[0];if(p)it.push(`<li>${ic(A.icon)}<span class="grow">${A.nome}<div class="muted">Próxima: ${quando(p)}${r.hora?' às '+esc(r.hora):''}</div></span></li>`)}
+    const pend=semRegistro(t).length;if(pend)it.push(`<li><a class="lk grow" href="#${t}"><span class="grow">${pend} ${pend===1?A.item:(A.item==='aula'?'aulas':'sessões')} de ${A.nome.toLowerCase()} sem registro</span><span class="pill warn">registrar</span></a></li>`)});
+  return it.length?`<ul class="items">${it.join('')}</ul>`:`<p style="margin:0">Escolha os dias das aulas de inglês e da terapia para elas aparecerem aqui.</p><a class="mais-link" href="#ingles">Abrir Inglês</a>`}
+function dDoc(d=TODAY()){return S.dieta.find(x=>x.id===d)||{}}
+function dSave(d,ch){const{id:_,...r}=dDoc(d);save('dieta',d,{...r,...ch})}
+const treinoDe=d=>TR.semana[parse(d).getDay()];
+function proxRef(){const h=new Date().getHours()*60+new Date().getMinutes();const fe=dDoc().feitas||[];return DT.ref.find(([k,t])=>!fe.includes(k)&&hm(t.replace('h',':'))+90>=h)||DT.ref.find(([k])=>!fe.includes(k))}
+const cardapio=(k,w)=>((cfg('cardapio')[k]||{})[w])||DT[k][w];
+function refTexto(k,d=TODAY()){const w=parse(d).getDay();if(k==='almoco'||k==='jantar')return cardapio(k,w);return null}
+function editCardapio(w){const al=cardapio('almoco',w),ja=cardapio('jantar',w);
+  $('#modal-root').innerHTML=`<div class="ov"><form class="modal" id="cdf"><h4>Cardápio de ${DIA[w]}</h4><p class="muted" style="margin-top:-6px">Troque pelo que a Beta costuma fazer. Mantenha uma carne, um carboidrato e salada.</p><div class="fld"><label for="cd-a">Almoço</label><textarea id="cd-a" rows="2">${esc(al)}</textarea></div><div class="fld"><label for="cd-j">Jantar</label><textarea id="cd-j" rows="2">${esc(ja)}</textarea></div><div class="spread"><button type="button" class="icon-btn" id="cd-r">Voltar à sugestão</button><div class="row"><button type="button" class="btn ghost" onclick="document.getElementById('modal-root').innerHTML=''">Cancelar</button><button class="btn">Salvar</button></div></div></form></div>`;
+  const grava=(a,j)=>{const c=cfg('cardapio');const almoco={...(c.almoco||{})},jantar={...(c.jantar||{})};if(a==null){delete almoco[w];delete jantar[w]}else{almoco[w]=a;jantar[w]=j}save('config','cardapio',{almoco,jantar});$('#modal-root').innerHTML='';flash('Cardápio salvo')};
+  $('#cd-r').onclick=()=>grava(null);$('#cdf').onsubmit=e=>{e.preventDefault();grava($('#cd-a').value.trim()||DT.almoco[w],$('#cd-j').value.trim()||DT.jantar[w])}}
+function dietaHoje(d=TODAY()){const fe=dDoc(d).feitas||[];
+  return`<ul class="items">${DT.ref.map(([k,t,l])=>{const tx=refTexto(k,d);const on=fe.includes(k);return`<li><button class="check ${on?'on':''}" data-act="refeicao" data-id="${k}" data-extra="${d}" aria-label="${l} feito"></button><div class="grow ${on?'done':''}"><span class="muted num">${t}</span> <b style="font-weight:600">${l}</b><div class="muted">${tx?esc(tx):'Escolha uma das opções abaixo'}</div></div></li>`}).join('')}</ul>`}
+function aguaHoje(d=TODAY()){const n=dDoc(d).agua||0;return`<div class="row" style="gap:6px;flex-wrap:wrap">${[...Array(10)].map((_,i)=>`<button class="copo ${i<n?'on':''}" data-act="agua" data-id="${i+1}" data-extra="${d}" aria-label="${i+1} copos"></button>`).join('')}</div><p class="muted" style="margin:8px 0 0">${n} de 10 copos (${(n*0.25).toLocaleString('pt-BR')} L)</p>`}
+function treinoHojeCard(d=TODAY()){const t=treinoDe(d);const feito=!!dDoc(d).treino;
+  const corpo=t==='A'||t==='B'?`<ul class="items">${TR[t].map(([e,r])=>`<li><span class="grow">${esc(e)}</span><span class="pill num">${r}</span></li>`).join('')}</ul>`:t==='Bike'?`<p style="margin:0">${esc(TR.bike[0][1])} <span class="muted">Depois de duas semanas, veja a evolução na aba Treino.</span></p>`:'<p class="muted" style="margin:0">Dia de descanso. Uma caminhada leve com a Marina ou as cachorras já vale.</p>';
+  const di=!!dDoc(d).diastase;
+  return`<div class="spread" style="margin-bottom:8px"><b style="font-weight:600">Diástase · 10 minutos, todo dia</b><label class="row" style="gap:8px"><button class="check ${di?'on':''}" data-act="diastase" data-extra="${d}" aria-label="Rotina da diástase feita"></button>Fiz</label></div><div class="spread" style="margin-bottom:8px"><b style="font-weight:600">${TR.nomes[t]}</b>${t!=='Descanso'?`<label class="row" style="gap:8px"><button class="check ${feito?'on':''}" data-act="treino" data-extra="${d}" aria-label="Treino feito"></button>Fiz</label>`:''}</div>${corpo}`}
+function V_dieta(){const d=TODAY();const w=parse(d).getDay();const ordem=[1,2,3,4,5,6,0];
+  const dias7=[...Array(7)].map((_,i)=>{const x=new Date();x.setDate(x.getDate()-i);return(dDoc(iso(x)).feitas||[]).length}).reduce((a,c)=>a+c,0);
+  return`<h2>Dieta</h2><p class="lead">Cardápio simples para ganhar massa e comer melhor, montado para a sua rotina (acorda às 9h, almoça por volta de 12h30, dorme às 22h). Marque as refeições ao longo do dia.</p>
+  <section class="card alerta"><h3>${ICONS.saude} Antes de começar</h3><ul class="items">${DT.cuidados.map(c=>`<li><span>${esc(c)}</span></li>`).join('')}</ul></section>
+  <section class="card" style="margin-top:16px"><div class="stats">${DT.meta.map(([l,v])=>`<div><div class="muted">${l} por dia</div><div class="stat" style="font-size:19px">${v}</div></div>`).join('')}</div></section>
+  <div class="grid" style="margin-top:16px">
+   <section class="card"><h3>${ICONS.alimentacao} Hoje · ${DIA[w]}</h3>${dietaHoje(d)}<p class="muted" style="margin:10px 0 0">${dias7} de 35 refeições marcadas nos últimos 7 dias.</p></section>
+   <section class="card"><h3>${ICONS.saude} Água de hoje</h3>${aguaHoje(d)}<h3 style="margin-top:18px">${ICONS.notas} Como montar o prato</h3><p style="margin:0">${esc(DT.prato)}</p></section>
+  </div>
+  <section class="card" style="margin-top:16px"><h3>${ICONS.agenda} Almoço e jantar da semana</h3><p class="muted" style="margin:-4px 0 8px">É uma sugestão. Toque em editar para trocar pelo que a Beta faz.</p><div class="hgrid"><table class="jt"><tr><th>Dia</th><th>Almoço</th><th>Jantar</th><th></th></tr>${ordem.map(i=>`<tr style="${i===w?'background:var(--chip)':''}"><td><b style="font-weight:600">${DIA[i].slice(0,3)}</b></td><td style="white-space:normal;min-width:180px">${esc(cardapio('almoco',i))}</td><td style="white-space:normal;min-width:180px">${esc(cardapio('jantar',i))}</td><td><button class="icon-btn" data-act="cardapio" data-extra="${i}">editar</button></td></tr>`).join('')}</table></div></section>
+  <div class="grid" style="margin-top:16px">${[['cafe','Café da manhã · escolha uma'],['lanche','Lanche da tarde · escolha uma'],['ceia','Ceia · escolha uma']].map(([k,t])=>`<section class="card"><h3>${ICONS.alimentacao} ${t}</h3><ul class="items">${DT.opcoes[k].map(o=>`<li><span>${esc(o)}</span></li>`).join('')}</ul></section>`).join('')}</div>
+  <div class="grid" style="margin-top:16px">
+   <section class="card"><h3>${ICONS.tarefas} Trocas que valem</h3><ul class="items">${DT.trocas.map(([g,l])=>`<li style="display:block"><b style="font-weight:600">${g}</b><div class="muted">${esc(l)}</div></li>`).join('')}</ul></section>
+   <section class="card"><h3>${ICONS.metas} Dicas</h3><ul class="items">${DT.dicas.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ul></section>
+   <section class="card"><h3>${ICONS.compras} Compras da semana</h3><p style="margin:0 0 10px">Os ingredientes do cardápio vão para a Feira do mês com um toque. O que já estiver na lista não se repete.</p><button class="btn" data-act="dieta-feira">Pôr os ingredientes na feira</button></section>
+  </div>`}
+function V_treino(){const d=TODAY();const w=parse(d).getDay();const ordem=[1,2,3,4,5,6,0];
+  const feitos=[...Array(7)].map((_,i)=>{const x=new Date();x.setDate(x.getDate()-i);return dDoc(iso(x)).treino?1:0}).reduce((a,c)=>a+c,0);
+  return`<h2>Treino em casa</h2><p class="lead">Todo dia, 10 minutos de exercícios para fechar a diástase. Força 3 vezes por semana para ganhar músculo, adaptada para não forçar o abdômen, e a bicicleta da varanda 2 vezes. Nas duas primeiras semanas, faça só a rotina da diástase e a bicicleta; o treino A e B entra a partir da 3ª semana.</p>
+  <section class="card alerta"><h3>${ICONS.saude} Antes de começar</h3><p style="margin:0">${esc(DT.cuidados[1])}</p></section>
+  <div class="grid" style="margin-top:16px">
+   <section class="card"><h3>${ICONS.agenda} Hoje · ${DIA[w]}</h3>${treinoHojeCard(d)}<p class="muted" style="margin:10px 0 0">${feitos} ${feitos===1?'treino feito':'treinos feitos'} nos últimos 7 dias. A meta é 5.</p></section>
+   <section class="card"><h3>${ICONS.lazer} Bicicleta</h3><ul class="items">${TR.bike.map(([a,b])=>`<li style="display:block"><b style="font-weight:600">${a}</b><div class="muted">${esc(b)}</div></li>`).join('')}</ul></section>
+  </div>
+  <div class="grid" style="margin-top:16px">
+   <section class="card"><h3>${ICONS.saude} Rotina da diástase · todo dia</h3><ul class="items">${TR.diastase.map(([e,r,o],i)=>`<li><span class="pill num" style="min-width:26px;text-align:center">${i+1}</span><div class="grow"><b style="font-weight:600">${esc(e)}</b> <span class="muted num">· ${r}</span><div class="muted">${esc(o)}</div></div></li>`).join('')}</ul></section>
+   <section class="card alerta"><h3>${ICONS.tarefas} Evite enquanto a diástase não fechar</h3><ul class="items">${TR.evitar.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ul><p class="muted" style="margin:10px 0 0">${esc(TR.teste)}</p></section>
+  </div>
+  <section class="card" style="margin-top:16px"><h3>${ICONS.agenda} Semana</h3><div class="semana">${ordem.map(i=>`<div class="dia ${i===w?'hoje':''}"><span class="muted">${DIA[i].slice(0,3)}</span><b>${TR.semana[i]==='A'||TR.semana[i]==='B'?'Treino '+TR.semana[i]:TR.semana[i]}</b></div>`).join('')}</div><p class="muted" style="margin:10px 0 0">${esc(TR.aquece)}</p></section>
+  <div class="grid" style="margin-top:16px">${['A','B'].map(t=>`<section class="card"><h3>${ICONS.metas} ${TR.nomes[t]}</h3><ul class="items">${TR[t].map(([e,r,o],i)=>`<li><span class="pill num" style="min-width:26px;text-align:center">${i+1}</span><div class="grow"><b style="font-weight:600">${esc(e)}</b> <span class="muted num">· ${r}</span>${o?`<div class="muted">${esc(o)}</div>`:''}</div></li>`).join('')}</ul></section>`).join('')}
+   <section class="card"><h3>${ICONS.tarefas} Para evoluir</h3><ul class="items">${TR.dicas.map(x=>`<li><span>${esc(x)}</span></li>`).join('')}</ul></section></div>`}
 
 function V_casa(){const L=[['comprar','O que comprar','compras'],['ajeitar','O que ajeitar','tarefas'],['instalar','O que instalar','casa']];
   return`<h2>Casa</h2><p class="lead">Três listas para a casa. Marque o que já resolveu.</p><div class="grid">${L.map(([k,t,i])=>{const it=S.casa.filter(x=>x.lista===k).sort((a,b)=>(a.feito-b.feito)||(a.criadoEm-b.criadoEm));const nd=it.filter(x=>x.feito).length;
@@ -600,19 +917,17 @@ function V_cachorras(){const P=[['Kiara','2 anos'],['Diana','7 anos · fase sên
    return`<section class="card"><div class="spread"><div><div class="petname">${n}</div><div class="muted">${s}</div></div>${addBtn('pets','Cuidado',{pet:n})}</div>
    <h3 style="margin-top:14px">Próximos</h3>${lembretes(prox)}<h3 style="margin-top:14px">Histórico</h3>${recList(rs.slice(0,15).map(r=>({...r,titulo:`${r.tipo}: ${r.titulo}${r.pet==='as duas'?' (as duas)':''}`})),'pets')}</section>`}).join('')}</div>`}
 
-const VIEWS={skincare:V_skincare,funcionarias:V_funcionarias,feira:V_feira,hoje:V_hoje,habitos:V_habitos,agenda:V_agenda,metas:V_metas,financas:V_financas,casa:V_casa,marina:V_marina,cachorras:V_cachorras};
+const VIEWS={ingles:()=>V_aulas('ingles'),terapia:()=>V_aulas('terapia'),guia:V_guia,dieta:V_dieta,treino:V_treino,skincare:V_skincare,funcionarias:V_funcionarias,feira:V_feira,hoje:V_hoje,habitos:V_habitos,agenda:V_agenda,metas:V_metas,financas:V_financas,casa:V_casa,marina:V_marina,cachorras:V_cachorras};
 function render(){renderTabs();const d=new Date();const h=d.getHours();
   $('#hello').textContent=(h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+', Carol';
   $('#today').textContent=`${DIA[d.getDay()]}, ${d.getDate()} de ${MES[d.getMonth()]} de ${d.getFullYear()}`;
   if(!ready){return}
   const y=scrollY;$('#view').innerHTML=VIEWS[route()]();scrollTo(0,y)}
 
-function setMenu(open){document.body.classList.toggle('menu-open',open);$('#scrim').hidden=!open;$('#menu-btn').setAttribute('aria-expanded',open)}
-$('#menu-btn').onclick=()=>setMenu(!document.body.classList.contains('menu-open'));
-$('#scrim').onclick=()=>setMenu(false);
-addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
-addEventListener('hashchange',()=>{scrollTo(0,0);setMenu(false);render()});
-render();
+
+function centerTab(){const n=$('#tabs'),a=n&&n.querySelector('[aria-current]');if(a&&n.scrollWidth>n.clientWidth)n.scrollLeft=a.offsetLeft-n.offsetLeft-n.clientWidth/2+a.offsetWidth/2}
+addEventListener('hashchange',()=>{scrollTo(0,0);render();centerTab()});
+render();centerTab();
 
 /* ---------- Supabase (igual ao Sistema Linéa) ---------- */
 const SUPABASE_URL='COLE_AQUI_A_PROJECT_URL';
