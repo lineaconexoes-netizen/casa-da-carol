@@ -236,6 +236,10 @@ a.lk::after{content:"›";color:var(--soft);font-size:18px;line-height:1}
   .ov.lado .qa>a[aria-current]{background:var(--bg);color:var(--accent);box-shadow:none;font-weight:600}
   .ov.lado .qa>a[aria-current] .ico{color:var(--accent)}
 }
+nav.tabs .grp,.qa>.grp{grid-column:1/-1;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#BCA186;padding:16px 12px 4px}
+.qa>.grp{color:var(--soft);padding:8px 2px 0}
+.ov.lado .qa>.grp{color:#BCA186;padding:16px 12px 4px}
+ul.items li{flex-wrap:wrap}ul.items li>.grow{min-width:min(120px,100%)}
 @keyframes entra{from{transform:translateX(-100%)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){.ov.lado .modal{animation:none}}
 [hidden]{display:none!important}
@@ -385,13 +389,15 @@ const editBtn=(col,id)=>`<button class="icon-btn" data-act="edit" data-col="${co
 
 /* ---------- seções ---------- */
 const TABS=[['hoje','Hoje','notas'],['habitos','Hábitos','autocuidado'],['agenda','Agenda','agenda'],['metas','Metas','metas'],['financas','Finanças','financas'],['feira','Feira do mês','compras'],['casa','Casa','casa'],['funcionarias','Funcionárias','trabalho'],['skincare','Skincare','autocuidado'],['marina','Marina','familia'],['cachorras','Kiara e Diana','saude']];
+const GRUPOS=[['',['hoje','agenda','financas','metas']],['Casa',['casa','feira']],['Saúde e cuidados',['habitos','skincare']],['Marina e cachorras',['marina','cachorras']],['Funcionárias',['funcionarias']]];
+const tabOf=k=>TABS.find(t=>t[0]===k);
 const route=()=>{const h=location.hash.slice(1);return TABS.some(t=>t[0]===h)?h:'hoje'};
-function renderTabs(){const r=route();$('#tabs').innerHTML=TABS.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}${l}</a>`).join('');renderBnav(r)}
+function renderTabs(){const r=route();$('#tabs').innerHTML=GRUPOS.map(([g,ks])=>(g?`<div class="grp">${g}</div>`:'')+ks.map(k=>{const[,l,i]=tabOf(k);return`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}${l}</a>`}).join('')).join('');renderBnav(r)}
 const BN=[['hoje','Hoje','notas'],['agenda','Agenda','agenda'],['financas','Finanças','financas'],['feira','Feira','compras']];
 const MAIS_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>';
 function renderBnav(r){const el=$('#bnav');if(!el)return;el.innerHTML=BN.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}<span>${l}</span></a>`).join('')+`<button data-act="mais" ${BN.some(b=>b[0]===r)?'':'aria-current="page"'}>${MAIS_SVG}<span>${BN.some(b=>b[0]===r)?'Mais':esc(TABS.find(t=>t[0]===r)[1])}</span></button>`}
 function sheet(t,html,cls=''){$('#modal-root').innerHTML=`<div class="ov ${cls}" id="ov-sheet"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(t)}"><div class="sheet-h"><h4>${esc(t)}</h4><button class="icon-btn" data-act="sheet-x">Fechar</button></div>${html}</div></div>`}
-function maisSheet(){const r=route();sheet('Menu',`<div class="qa">${TABS.map(([k,l,i])=>`<a href="#${k}" data-act="sheet-x" ${k===r?'aria-current="page"':''}>${ic(i)}${l}</a>`).join('')}</div>`,'lado')}
+function maisSheet(){const r=route();sheet('Menu',`<div class="qa">${GRUPOS.map(([g,ks])=>(g?`<div class="grp">${g}</div>`:'')+ks.map(k=>{const[,l,i]=tabOf(k);return`<a href="#${k}" data-act="sheet-x" ${k===r?'aria-current="page"':''}>${ic(i)}${l}</a>`}).join('')).join('')}</div>`,'lado')}
 const QUICK=[['lancamentos','Gasto','financas',{tipo:'despesa'}],['lancamentos','Entrada','financas',{tipo:'receita'}],['compromissos','Compromisso','agenda'],['feira','Item da feira','compras'],['casa','Coisa da casa','casa'],['visitas','Ida da Sil','trabalho',{data:'hoje'}],['marina','Marina','familia'],['pets','Kiara e Diana','saude']];
 function quickSheet(){sheet('Adicionar',`<div class="qa">${QUICK.map(([c,l,i,x])=>`<button data-act="new" data-col="${c}" ${x?`data-extra='${esc(JSON.stringify(x.data==='hoje'?{...x,data:TODAY()}:x))}'`:''}>${ic(i)}${l}</button>`).join('')}</div>`)}
 
