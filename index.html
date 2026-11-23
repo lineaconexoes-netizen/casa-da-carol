@@ -203,6 +203,41 @@ a.lk::after{content:"›";color:var(--soft);font-size:18px;line-height:1}
   #mf>.spread>.row{flex:1;flex-wrap:nowrap;justify-content:flex-end}#mf>.spread>.row .btn{flex:1;white-space:nowrap;font-size:13.5px}
   #mf>.spread>div:first-child:empty{display:none}
 }
+/* menu na barra lateral esquerda (pedido da Carol, 23/11) */
+@media (min-width:861px){
+  header.top{position:fixed;top:0;bottom:0;left:0;width:264px;z-index:15;display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin;
+    border-bottom:0;border-right:3px solid #BCA186;background:linear-gradient(170deg,#604335 0%,#7A5A48 65%,#8E705A 100%);
+    padding:calc(26px + env(safe-area-inset-top,0px)) 14px calc(20px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px))}
+  .topo{flex-direction:column;align-items:flex-start;margin:0;padding:0 8px;gap:10px;max-width:none}
+  .marca{flex-direction:column;align-items:flex-start;gap:12px}
+  h1{font-size:32px}
+  .sub{margin:4px 0 0;line-height:1.4}
+  .sub>span{display:block}.sub{font-size:0}.sub>span{font-size:13px}
+  header.top .sair{margin:6px 0 0}
+  nav.tabs{flex-direction:column;flex-wrap:nowrap;gap:2px;margin:22px 0 0;padding-top:18px;border-top:1px solid rgba(188,161,134,.35);max-width:none}
+  nav.tabs a{border-radius:10px;padding:10px 12px;font-size:14px;width:100%}
+  nav.tabs a:hover{background:rgba(227,219,202,.1)}
+  nav.tabs a[aria-current="page"]{background:var(--bg);color:var(--accent)}
+  nav.tabs a svg{width:20px;height:20px}
+  .wrap{max-width:none;margin:0;padding-left:calc(264px + 40px);padding-right:max(40px,env(safe-area-inset-right,0px));padding-top:28px}
+  .wrap>*{max-width:1180px}
+  .fab{right:max(32px,env(safe-area-inset-right,0px))}
+}
+/* no celular, "Mais" abre o menu como barra lateral esquerda */
+@media (max-width:860px){
+  .ov.lado{place-items:stretch start;padding:0}
+  .ov.lado .modal{height:100%;max-height:none;width:min(300px,84vw);border-radius:0 18px 18px 0;border:0;border-right:3px solid #BCA186;
+    background:linear-gradient(170deg,#604335 0%,#7A5A48 65%,#8E705A 100%);color:#E3DBCA;padding:calc(22px + env(safe-area-inset-top,0px)) 12px calc(20px + env(safe-area-inset-bottom,0px));animation:entra .22s ease}
+  .ov.lado .modal h4{color:#E3DBCA;padding-left:8px}
+  .ov.lado .icon-btn{color:#E3DBCA}
+  .ov.lado .qa{grid-template-columns:1fr;gap:2px}
+  .ov.lado .qa>a{background:none;border:0;color:#E3DBCA;min-height:46px;padding:10px 12px;border-radius:10px;font-size:15px}
+  .ov.lado .qa>a .ico{color:#E3DBCA}
+  .ov.lado .qa>a[aria-current]{background:var(--bg);color:var(--accent);box-shadow:none;font-weight:600}
+  .ov.lado .qa>a[aria-current] .ico{color:var(--accent)}
+}
+@keyframes entra{from{transform:translateX(-100%)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.ov.lado .modal{animation:none}}
 [hidden]{display:none!important}
 img{max-width:100%}
 .login{min-height:100vh;display:grid;place-items:center;padding:16px}
@@ -355,8 +390,8 @@ function renderTabs(){const r=route();$('#tabs').innerHTML=TABS.map(([k,l,i])=>`
 const BN=[['hoje','Hoje','notas'],['agenda','Agenda','agenda'],['financas','Finanças','financas'],['feira','Feira','compras']];
 const MAIS_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>';
 function renderBnav(r){const el=$('#bnav');if(!el)return;el.innerHTML=BN.map(([k,l,i])=>`<a href="#${k}" ${k===r?'aria-current="page"':''}>${ICONS[i]}<span>${l}</span></a>`).join('')+`<button data-act="mais" ${BN.some(b=>b[0]===r)?'':'aria-current="page"'}>${MAIS_SVG}<span>${BN.some(b=>b[0]===r)?'Mais':esc(TABS.find(t=>t[0]===r)[1])}</span></button>`}
-function sheet(t,html){$('#modal-root').innerHTML=`<div class="ov" id="ov-sheet"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(t)}"><div class="sheet-h"><h4>${esc(t)}</h4><button class="icon-btn" data-act="sheet-x">Fechar</button></div>${html}</div></div>`}
-function maisSheet(){const r=route();sheet('Seções',`<div class="qa">${TABS.map(([k,l,i])=>`<a href="#${k}" data-act="sheet-x" ${k===r?'aria-current="page"':''}>${ic(i)}${l}</a>`).join('')}</div>`)}
+function sheet(t,html,cls=''){$('#modal-root').innerHTML=`<div class="ov ${cls}" id="ov-sheet"><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(t)}"><div class="sheet-h"><h4>${esc(t)}</h4><button class="icon-btn" data-act="sheet-x">Fechar</button></div>${html}</div></div>`}
+function maisSheet(){const r=route();sheet('Menu',`<div class="qa">${TABS.map(([k,l,i])=>`<a href="#${k}" data-act="sheet-x" ${k===r?'aria-current="page"':''}>${ic(i)}${l}</a>`).join('')}</div>`,'lado')}
 const QUICK=[['lancamentos','Gasto','financas',{tipo:'despesa'}],['lancamentos','Entrada','financas',{tipo:'receita'}],['compromissos','Compromisso','agenda'],['feira','Item da feira','compras'],['casa','Coisa da casa','casa'],['visitas','Ida da Sil','trabalho',{data:'hoje'}],['marina','Marina','familia'],['pets','Kiara e Diana','saude']];
 function quickSheet(){sheet('Adicionar',`<div class="qa">${QUICK.map(([c,l,i,x])=>`<button data-act="new" data-col="${c}" ${x?`data-extra='${esc(JSON.stringify(x.data==='hoje'?{...x,data:TODAY()}:x))}'`:''}>${ic(i)}${l}</button>`).join('')}</div>`)}
 
